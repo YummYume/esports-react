@@ -1,0 +1,11 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "username": "root",
+            "password": "root",
+            "coins": 100
+        }
+    ],
+    "profile": { "name": "typicode" }
+}
