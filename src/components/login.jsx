@@ -5,9 +5,13 @@ import Spinner from 'react-bootstrap/Spinner';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Alert from 'react-bootstrap/Alert';
 import { Row, Col, Container } from 'react-bootstrap';
-import { getUserOrFalse } from '../components/API/user';
+import { getUserOrFalse, generateToken, isLoggedIn } from '../components/API/user';
+import useLocalStorage from '@dothq/react-use-localstorage';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+    const navigate = useNavigate();
+    const [user, setUser] = useLocalStorage('user', null);
     const [loading, setLoading] = useState(false);
     const [validated, setValidated] = useState(false);
     const [error, setError] = useState(false);
@@ -20,7 +24,11 @@ export default function Login() {
         if (false !== error) {
             setTimeout(() => {
                 setError(false);
-            }, 4000)
+            }, 4000);
+        }
+
+        if (isLoggedIn()) {
+            navigate('/menu');
         }
     });
 
@@ -32,9 +40,11 @@ export default function Login() {
         setLoading(true);
 
         if (formData.checkValidity() === false) {
+            setLoading(false);
             e.preventDefault();
             e.stopPropagation();
             setError('Erreur dans le formulaire. Veuillez corriger les erreurs.');
+            setValidated(true);
             return;
         }
 
@@ -43,10 +53,15 @@ export default function Login() {
         getUserOrFalse(form.username, form.password).then(user => {
             setLoading(false);
             if (user) {
-                console.log(user);
+                user = generateToken(user);
+                setUser(user);
+                navigate('/menu');
             } else {
                 setError('Nom d\'utilisateur ou mot de passe erroné.');
             }
+        }).catch(err => {
+            setLoading(false);
+            setError('Une erreur est survenue.');
         });
     };
 
