@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Header from './components/layout/header';
-import './index.css';
-import App from './App';
+import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import Login from './components/login';
 import Menu from './components/logged/menu';
 
+import './styles/Index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(

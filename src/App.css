@@ -1,9 +1,0 @@
-.minWdScreen {
-  min-height: 100vh;
-}
-
-#root {
-  min-height: 100vh;
-  align-items: center;
-  display: flex;
-}

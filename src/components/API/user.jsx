@@ -27,19 +27,8 @@ export const getUserWithToken = async (token, username = null, id = null) => {
         token: token
     };
 
-    if (username) {
-        params = {
-            ...params,
-            username: username
-        }
-    }
-
-    if (id) {
-        params = {
-            ...params,
-            id: id
-        }
-    }
+    username && (params = { ...params, username: username })
+    || id && (params = { ...params, id: id });
 
     const res = await axios.get(`${process.env.REACT_APP_DB_URL}/users`, {
         params : params
