@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Header from './components/layout/header';
-import App from './components/App';
 import reportWebVitals from './reportWebVitals';
-import Login from './components/login';
-import Menu from './components/logged/menu';
+import Header from './components/layout/Header';
+import App from './components/App';
+import Login from './components/Login';
+import Menu from './components/logged/Menu';
 
-import './styles/Index.css';
+import './styles/Index.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 ReactDOM.render(

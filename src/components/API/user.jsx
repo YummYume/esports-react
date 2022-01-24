@@ -80,22 +80,30 @@ export const generateToken = (user) => {
     };
 };
 
-export const disconnect = (user) => {
+export const disconnect = async (user) => {
     try {
         const userWithoutToken = {
             ...user,
             token: null
         };
 
-        axios.put(`${process.env.REACT_APP_DB_URL}/users/${userWithoutToken.id}`, userWithoutToken, {
+        await axios.put(`${process.env.REACT_APP_DB_URL}/users/${userWithoutToken.id}`, userWithoutToken, {
             headers: {
                 header: 'Content-Type: application/json'
             }
-        });
+        }).then((response) => {
+            if (response.status === 200) {
+                localStorage.removeItem('user');
+                return true;
+            }
 
-        localStorage.removeItem('user');
-        return true;
+            return false;
+        }).catch((error) => {
+            console.error(`Error during disconnect : ${error.message}`);
+            return false;
+        });
     } catch (error) {
+        console.error(`Error during disconnect : ${error.message}`);
         return false;
     }
 };

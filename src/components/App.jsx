@@ -11,7 +11,7 @@ export default function App() {
         <Container className="align-items-center" fluid>
             <Row className={`${styles.minWdScreenTitle} justify-content-center my-2`}>
                 <Col className="text-center" xs={12}>
-                    <h1 className={`${styles.mainTitle}`}>L'Esport,<br /> plus qu'une competition,<br /> un investissement.</h1>
+                    <h1 className={`${styles.mainTitle}`}>L'Esport,<br /> Plus qu'une Compétition,<br />Un Investissement.</h1>
                 </Col>
             </Row>
             <Row className="justify-content-center my-2">

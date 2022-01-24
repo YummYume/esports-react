@@ -5,7 +5,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Alert from 'react-bootstrap/Alert';
 import { Row, Col, Container } from 'react-bootstrap';
-import { getUserOrFalse, generateToken, isLoggedIn } from '../components/API/user';
+import { getUserOrFalse, generateToken, isLoggedIn } from './API/user';
 import useLocalStorage from '@dothq/react-use-localstorage';
 import { useNavigate } from 'react-router-dom';
 
