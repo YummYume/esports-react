@@ -9,9 +9,9 @@ import { getUserOrFalse, generateToken, isLoggedIn } from './API/user';
 import useLocalStorage from '@dothq/react-use-localstorage';
 import { useNavigate } from 'react-router-dom';
 
-export default function Login() {
+export default function Login({updateUser}) {
     const navigate = useNavigate();
-    const [user, setUser] = useLocalStorage('user', null);
+    const [userToken, setUserToken] = useLocalStorage('userToken', localStorage.getItem('userToken'));
     const [loading, setLoading] = useState(false);
     const [validated, setValidated] = useState(false);
     const [error, setError] = useState(false);
@@ -26,11 +26,16 @@ export default function Login() {
                 setError(false);
             }, 4000);
         }
-
-        if (isLoggedIn()) {
-            navigate('/menu');
-        }
     });
+
+    useEffect(() => {
+        isLoggedIn().then((loggedIn) => {
+            if (loggedIn) {
+                updateUser();
+                navigate('/menu');
+            }
+        });
+    }, []);
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -54,12 +59,13 @@ export default function Login() {
             setLoading(false);
             if (user) {
                 user = generateToken(user);
-                setUser(user);
+                setUserToken(user.token);
+                updateUser();
                 navigate('/menu');
             } else {
                 setError('Nom d\'utilisateur ou mot de passe erroné.');
             }
-        }).catch(err => {
+        }).catch((error) => {
             setLoading(false);
             setError('Une erreur est survenue.');
         });

@@ -1,11 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
-import Header from './components/layout/Header';
 import App from './components/App';
-import Login from './components/Login';
-import Menu from './components/logged/Menu';
+import { BrowserRouter } from "react-router-dom";
 
 import './styles/Index.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -13,12 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 ReactDOM.render(
     <React.StrictMode>
         <BrowserRouter>
-            <Header />
-            <Routes>
-                <Route path="/" element={<App />} />
-                <Route path="login" element={<Login />} />
-                <Route path="menu" element={<Menu />} />
-            </Routes>
+            <App />
         </BrowserRouter>
     </React.StrictMode>,
     document.getElementById('root')

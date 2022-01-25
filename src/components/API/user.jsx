@@ -19,7 +19,7 @@ export const getUserOrFalse = async (username, password) => {
 };
 
 export const getUserWithToken = async (token, username = null, id = null) => {
-    if (null === token) {
+    if (undefined === token || null === token) {
         return false;
     }
 
@@ -27,8 +27,8 @@ export const getUserWithToken = async (token, username = null, id = null) => {
         token: token
     };
 
-    username && (params = { ...params, username: username })
-    || id && (params = { ...params, id: id });
+    username && (params = { ...params, username: username });
+    id && (params = { ...params, id: id });
 
     const res = await axios.get(`${process.env.REACT_APP_DB_URL}/users`, {
         params : params
@@ -41,20 +41,14 @@ export const getUserWithToken = async (token, username = null, id = null) => {
     return false;
 };
 
-export const isLoggedIn = () => {
-    let user = null;
+export const isLoggedIn = async () => {
+    const user = await getUserWithToken(JSON.parse(localStorage.getItem('userToken')));
 
-    try {
-        user = JSON.parse(localStorage.getItem('user'));
-    } catch (error) {
+    if (false === user || !user.hasOwnProperty('token') || !user.hasOwnProperty('username') || !user.hasOwnProperty('id')) {
         return false;
     }
 
-    if (null === user || typeof user !== 'object' || !user.hasOwnProperty('token') || !user.hasOwnProperty('username') || !user.hasOwnProperty('id')) {
-        return false;
-    }
-
-    return getUserWithToken(user.token, user.username, user.id) !== false;
+    return true;
 };
 
 export const generateToken = (user) => {
@@ -93,7 +87,7 @@ export const disconnect = async (user) => {
             }
         }).then((response) => {
             if (response.status === 200) {
-                localStorage.removeItem('user');
+                localStorage.removeItem('userToken');
                 return true;
             }
 

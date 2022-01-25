@@ -4,27 +4,32 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
-import useLocalStorage from '@dothq/react-use-localstorage';
-import { isLoggedIn, disconnect } from '../API/user';
+import { disconnect } from '../API/user';
+import { getAllAvailableGames } from '../API/pandaScore';
 
-export default function Header() {
+export default function Header({user, updateUser}) {
     const navigate = useNavigate();
-    const [user, setUser] = useLocalStorage('user');
 
-    const disconnect = () => {
-
+    const disconnectUser = (user) => {
+        disconnect(user).then(() => {
+            updateUser();
+            navigate('/');
+        });
     };
 
     const HeaderNav = () => {
-        const currentUser = typeof user === 'string' ? JSON.parse(user) : user;
-
-        if (isLoggedIn()) {
+        if (false !== user) {
             return (
                 <Navbar.Collapse className="justify-content-end">
-                    <NavDropdown title={currentUser.username} id="userDropdown">
+                    <NavDropdown title="Les Leagues" id="leaguesDropdown">
+                        {getAllAvailableGames().map((game) => (
+                            <NavDropdown.Item key={game.slug}>{game.name}</NavDropdown.Item>
+                        ))}
+                    </NavDropdown>
+                    <NavDropdown title={user.username} id="userDropdown">
                         <NavDropdown.Item onClick={() => navigate('/menu')}>Accueil</NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item onClick={() => disconnect(currentUser)}>Déconnexion</NavDropdown.Item>
+                        <NavDropdown.Item onClick={() => disconnectUser(user)}>Déconnexion</NavDropdown.Item>
                     </NavDropdown>
                 </Navbar.Collapse>
             );
@@ -45,7 +50,7 @@ export default function Header() {
                 <Container>
                     <Navbar.Brand onClick={() => navigate('/')}>
                         <img
-                            alt=""
+                            alt="logo"
                             src="/logo192.png"
                             width="30"
                             height="30"
