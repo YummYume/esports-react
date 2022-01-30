@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import NavDropdown from 'react-bootstrap/NavDropdown';
 import Container from 'react-bootstrap/Container';
-import { disconnect } from '../API/user';
-import { getAllAvailableGames } from '../API/pandaScore';
+import { disconnect } from '../../api/user';
+import HeaderNav from '../header/Nav';
 
-export default function Header({user, updateUser}) {
+export default function Header({user, updateUser, loading}) {
     const navigate = useNavigate();
 
     const disconnectUser = (user) => {
@@ -17,38 +16,11 @@ export default function Header({user, updateUser}) {
         });
     };
 
-    const HeaderNav = () => {
-        if (false !== user) {
-            return (
-                <Navbar.Collapse className="justify-content-end">
-                    <NavDropdown title="Les Leagues" id="leaguesDropdown">
-                        {getAllAvailableGames().map((game) => (
-                            <NavDropdown.Item key={game.slug}>{game.name}</NavDropdown.Item>
-                        ))}
-                    </NavDropdown>
-                    <NavDropdown title={user.username} id="userDropdown">
-                        <NavDropdown.Item onClick={() => navigate('/menu')}>Accueil</NavDropdown.Item>
-                        <NavDropdown.Divider />
-                        <NavDropdown.Item onClick={() => disconnectUser(user)}>Déconnexion</NavDropdown.Item>
-                    </NavDropdown>
-                </Navbar.Collapse>
-            );
-        }
-
-        return (
-            <Navbar.Collapse className="justify-content-end">
-                <Nav.Link className="text-info" onClick={() => navigate('/login')}>Connexion</Nav.Link>
-                <Navbar.Text>ou</Navbar.Text>
-                <Nav.Link className="text-info" onClick={() => navigate('/login')}>Inscription</Nav.Link>
-            </Navbar.Collapse>
-        );
-    };
-
     return (
         <header>
             <Navbar collapseOnSelect expand="lg" fixed="top" bg="dark" variant="dark">
                 <Container>
-                    <Navbar.Brand onClick={() => navigate('/')}>
+                    <Navbar.Brand onClick={() => !loading && navigate('/')}>
                         <img
                             alt="logo"
                             src="/logo192.png"
@@ -59,7 +31,7 @@ export default function Header({user, updateUser}) {
                         Esport Bettings
                     </Navbar.Brand>
                     <Nav>
-                        <HeaderNav />
+                        <HeaderNav user={user} disconnectUser={disconnectUser} loading={loading} />
                     </Nav>
                 </Container>
             </Navbar>

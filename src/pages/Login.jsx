@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Spinner from 'react-bootstrap/Spinner';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Alert from 'react-bootstrap/Alert';
 import { Row, Col, Container } from 'react-bootstrap';
-import { getUserOrFalse, generateToken, isLoggedIn } from './API/user';
 import useLocalStorage from '@dothq/react-use-localstorage';
 import { useNavigate } from 'react-router-dom';
+
+import { getUserOrFalse, generateToken, isLoggedIn } from '../api/user';
 
 export default function Login({updateUser}) {
     const navigate = useNavigate();
@@ -34,6 +36,8 @@ export default function Login({updateUser}) {
                 updateUser();
                 navigate('/menu');
             }
+        }).catch((error) => {
+            console.error(`Error during useEffect (Login) : ${error}`);
         });
     }, []);
 
@@ -56,18 +60,18 @@ export default function Login({updateUser}) {
         setValidated(true);
 
         getUserOrFalse(form.username, form.password).then(user => {
-            setLoading(false);
             if (user) {
                 user = generateToken(user);
                 setUserToken(user.token);
-                updateUser();
                 navigate('/menu');
             } else {
                 setError('Nom d\'utilisateur ou mot de passe erroné.');
             }
         }).catch((error) => {
-            setLoading(false);
+            console.error(`Error during onSubmit (getUserOrFalse) : ${error}`);
             setError('Une erreur est survenue.');
+        }).finally(() => {
+            setLoading(false);
         });
     };
 
@@ -92,26 +96,36 @@ export default function Login({updateUser}) {
                     </Alert>
                     <Form noValidate validated={validated} onSubmit={onSubmit}>
                         <Form.Group className="mb-3" controlId="formUsername">
-                            <Form.Label>Nom d'utilisateur</Form.Label>
                             <InputGroup hasValidation>
-                                <Form.Control type="text" placeholder="Nom d'utilisateur" onInput={(e) => handleUserInput('username', e.target.value)} required/>
-                                <Form.Control.Feedback type="invalid">
-                                    Veuillez saisir votre nom d'utilisateur.
-                                </Form.Control.Feedback>
+                                <FloatingLabel
+                                    controlId="floatingUsernameLabel"
+                                    label="Nom d'utilisateur"
+                                    className="mb-3 w-100"
+                                >
+                                    <Form.Control type="text" placeholder="Nom d'utilisateur" onInput={(e) => handleUserInput('username', e.target.value)} required/>
+                                    <Form.Control.Feedback type="invalid">
+                                        Veuillez saisir votre nom d'utilisateur.
+                                    </Form.Control.Feedback>
+                                </FloatingLabel>
                             </InputGroup>
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="formPassword">
-                            <Form.Label>Mot de passe</Form.Label>
                             <InputGroup hasValidation>
-                                <Form.Control type="password" placeholder="Mot de passe" onInput={(e) => handleUserInput('password', e.target.value)} required/>
-                                <Form.Control.Feedback type="invalid">
-                                    Veuillez saisir votre mot de passe.
-                                </Form.Control.Feedback>
+                                <FloatingLabel
+                                    controlId="floatingPasswordLabel"
+                                    label="Mot de passe"
+                                    className="mb-3 w-100"
+                                >
+                                    <Form.Control type="password" placeholder="Mot de passe" onInput={(e) => handleUserInput('password', e.target.value)} required/>
+                                    <Form.Control.Feedback type="invalid">
+                                        Veuillez saisir votre mot de passe.
+                                    </Form.Control.Feedback>
+                                </FloatingLabel>
                             </InputGroup>
                         </Form.Group>
                         <div className="text-center">
                             <Button variant="outline-secondary" disabled={loading} type="submit">
-                                Connexion { loading &&
+                                Connexion {loading &&
                                     <Spinner
                                         as="span"
                                         animation="border"

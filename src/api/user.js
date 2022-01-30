@@ -1,11 +1,12 @@
 import axios from 'axios';
 import sha256 from 'crypto-js/sha256';
 
-export const getUserOrFalse = async (username, password) => {
+export const getUserOrFalse = async (username, password = null) => {
     let params = {
-        username: username,
-        password: sha256(password).toString()
+        username: username
     };
+
+    params && (params = { ...params, password: sha256(password).toString() });
 
     const res = await axios.get(`${process.env.REACT_APP_DB_URL}/users`, {
         params : params

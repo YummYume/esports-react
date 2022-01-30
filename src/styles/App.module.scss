@@ -10,3 +10,13 @@
     font-family: "Fira Sans", serif;
     letter-spacing: 3px;
 }
+
+.loading {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba($color: #212529, $alpha: 0.6);
+    z-index: 99;
+}
