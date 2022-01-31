@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
-import { disconnect } from '../../api/user';
+
 import HeaderNav from '../header/Nav';
+import { disconnect } from '../../api/user';
 
 export default function Header({user, updateUser, loading}) {
     const navigate = useNavigate();

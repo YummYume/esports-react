@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@dothq/react-use-localstorage": "^3.5.9",
+    "@react-hook/window-size": "^3.0.7",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",

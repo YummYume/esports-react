@@ -49,12 +49,8 @@ export const getGameLeagues = async (game = null, page = null, perPage = null) =
         page: page ?? 1,
         per_page: perPage ?? 50
     };
-    let queryString = 'leagues';
+    const queryString = isValidGame(game) ? `${game}/leagues` : 'leagues';
     let leagues = null;
-
-    if (isValidGame(game)) {
-        queryString = `${game}/leagues`;
-    }
 
     await pandaScoreQuery().get(queryString, { params: params }).then((data) => {
         leagues = data;
@@ -70,12 +66,8 @@ export const getGamePlayers = async (game = null, page = null, perPage = null) =
         page: page ?? 1,
         per_page: perPage ?? 50
     };
-    let queryString = 'players';
+    const queryString = isValidGame(game) ? `${game}/players` : 'players';
     let players = null;
-
-    if (isValidGame(game)) {
-        queryString = `${game}/players`;
-    }
 
     await pandaScoreQuery().get(queryString, { params: params }).then((data) => {
         players = data;
@@ -91,12 +83,8 @@ export const getGameTeams = async (game = null, page = null, perPage = null) => 
         page: page ?? 1,
         per_page: perPage ?? 50
     };
-    let queryString = 'teams';
+    const queryString = isValidGame(game) ? `${game}/teams` : 'teams';
     let teams = null;
-
-    if (isValidGame(game)) {
-        queryString = `${game}/teams`;
-    }
 
     await pandaScoreQuery().get(queryString, { params: params }).then((data) => {
         teams = data;
@@ -117,12 +105,8 @@ export const getGameMatches = async (game = null, page = null, perPage = null) =
         page: page ?? 1,
         per_page: perPage ?? 50
     };
-    let queryString = 'matches';
+    const queryString = isValidGame(game) ? `${game}/matches` : 'matches';
     let matches = null;
-
-    if (isValidGame(game)) {
-        queryString = `${game}/matches`;
-    }
 
     await axios.all(endPoints.map((endPoint) => pandaScoreQuery().get(`${queryString}/${endPoint}`, { params: params }).then((data) => {
         matches = data;

@@ -3,6 +3,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useNavigate } from 'react-router-dom';
+
 import { getAllAvailableGames } from '../../api/pandaScore';
 
 const HeaderNav = ({user, disconnectUser, loading}) => {

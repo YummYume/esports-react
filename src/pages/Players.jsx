@@ -1,54 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Container } from 'react-bootstrap';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { useWindowWidth } from '@react-hook/window-size';
 
 import { getGamePlayers, isValidGame, getGameNameBySlug } from '../api/pandaScore';
 import PlayerSkeleton from '../components/players/skeleton/PlayerSkeleton';
 import PlayerItem from '../components/players/PlayerItem';
 import styles from '../styles/App.module.scss';
+import Pagination from '../components/common/Pagination';
 
 export default function Players() {
     const [loading, setLoading] = useState(true);
     const [players, setPlayers] = useState(null);
     const [page, setPage] = useState(null);
-    const [perPage, setPerPage] = useState(54);
+    const [perPage, setPerPage] = useState(null);
+    const [maxResults, setMaxResults] = useState(null);
     const { slug } = useParams();
     const [params] = useSearchParams();
+    const width = useWindowWidth();
 
     useEffect(() => {
         updatePage();
-    }, []);
+        page && (updatePlayers());
+    }, [slug, page, perPage]);
 
     useEffect(() => {
-        if (page) {
-            getGamePlayers(slug, page, perPage).then((data) => {
-                setPlayers(data.data);
-            }).catch((error) => {
-                console.error(`Error during useEffect for page (Players) : ${error}`);
-            }).finally(() => {
-                setLoading(false);
-            });
-        }
-    }, [page]);
-
-    useEffect(() => {
-        false === loading && (setLoading(true));
         updatePage();
+    }, [params]);
 
-        if (page) {
-            getGamePlayers(slug, page, perPage).then((data) => {
-                setPlayers(data.data);
-            }).catch((error) => {
-                console.error(`Error during useEffect for slug (Players) : ${error}`);
-            }).finally(() => {
-                setLoading(false);
-            });
-        }
-    }, [slug]);
+    useEffect(() => {
+        width < 500 && perPage !== 20 && (setPerPage(20));
+        width >= 500 && width < 1000 && perPage !== 40 && (setPerPage(40));
+        width >= 1000 && perPage !== 60 && (setPerPage(60));
+    }, [width]);
 
     const updatePage = () => {
-        page && (setPage(null));
-
         if (params.get('page')) {
             try {
                 setPage(parseInt(params.get('page')));
@@ -58,6 +44,24 @@ export default function Players() {
         } else {
             setPage(1);
         }
+    };
+
+    const updatePlayers = () => {
+        false === loading && (setLoading(true));
+
+        getGamePlayers(slug, page, perPage).then((data) => {
+            try {
+                setMaxResults(parseInt(data.headers['x-total']));
+            } catch (error) {
+                console.error(`Error during updatePlayers (Players) : ${error}`);
+                setMaxResults(null);
+            }
+            setPlayers(data.data);
+        }).catch((error) => {
+            console.error(`Error during updatePlayers (Players) : ${error}`);
+        }).finally(() => {
+            setLoading(false);
+        });
     };
 
     return (
@@ -72,6 +76,13 @@ export default function Players() {
                         {!loading && players.map(player => (<PlayerItem key={player.id} player={player} />))}
                     </Row>
                 </Col>
+                {page && perPage && maxResults && (
+                    <Col className="my-4" xs={12}>
+                        <div className="d-flex align-items-center justify-content-center">
+                            <Pagination page={page} perPage={perPage} maxResults={maxResults} />
+                        </div>
+                    </Col>
+                )}
             </Row>
         </Container>
     )
