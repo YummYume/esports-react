@@ -24,7 +24,7 @@ export default function Players() {
             getGamePlayers(slug, page, perPage).then((data) => {
                 setPlayers(data.data);
             }).catch((error) => {
-                console.error(`Error during useEffect (Players) : ${error}`);
+                console.error(`Error during useEffect for page (Players) : ${error}`);
             }).finally(() => {
                 setLoading(false);
             });
@@ -39,7 +39,7 @@ export default function Players() {
             getGamePlayers(slug, page, perPage).then((data) => {
                 setPlayers(data.data);
             }).catch((error) => {
-                console.error(`Error during useEffect (Players) : ${error}`);
+                console.error(`Error during useEffect for slug (Players) : ${error}`);
             }).finally(() => {
                 setLoading(false);
             });

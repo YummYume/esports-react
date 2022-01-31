@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route } from "react-router-dom";
+import PacmanLoader from "react-spinners/PacmanLoader";
+import ScrollToTop from "react-scroll-to-top";
+
 import Header from '../components/layout/Header';
 import Main from './Main';
 import Login from './Login';
@@ -7,8 +10,6 @@ import Menu from './Menu';
 import Players from './Players';
 import NotFound from './NotFound';
 import { getUserWithToken } from '../api/user';
-import PacmanLoader from "react-spinners/PacmanLoader";
-
 import styles from '../styles/App.module.scss';
 
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
                 <Route path="/players/:slug" element={<Players />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
+            <ScrollToTop smooth />
         </div>
     );
 }
