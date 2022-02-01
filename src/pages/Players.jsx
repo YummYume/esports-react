@@ -11,7 +11,7 @@ import Pagination from '../components/common/Pagination';
 
 export default function Players() {
     const [loading, setLoading] = useState(true);
-    const [players, setPlayers] = useState(null);
+    const [players, setPlayers] = useState([]);
     const [page, setPage] = useState(null);
     const [perPage, setPerPage] = useState(null);
     const [maxResults, setMaxResults] = useState(null);
@@ -29,15 +29,17 @@ export default function Players() {
     }, [params]);
 
     useEffect(() => {
-        width < 500 && perPage !== 20 && (setPerPage(20));
-        width >= 500 && width < 1000 && perPage !== 40 && (setPerPage(40));
+        width < 575 && perPage !== 20 && (setPerPage(20));
+        width >= 575 && width < 1000 && perPage !== 40 && (setPerPage(40));
         width >= 1000 && perPage !== 60 && (setPerPage(60));
     }, [width]);
 
     const updatePage = () => {
         if (params.get('page')) {
             try {
-                setPage(parseInt(params.get('page')));
+                const lastPage = Math.ceil(maxResults / perPage);
+
+                parseInt(params.get('page')) <= lastPage ? setPage(parseInt(params.get('page'))) : setPage(lastPage);
             } catch (error) {
                 setPage(1);
             }
@@ -51,12 +53,12 @@ export default function Players() {
 
         getGamePlayers(slug, page, perPage).then((data) => {
             try {
+                setPlayers(data ? data.data ?? [] : []);
                 setMaxResults(parseInt(data.headers['x-total']));
             } catch (error) {
                 console.error(`Error during updatePlayers (Players) : ${error}`);
                 setMaxResults(null);
             }
-            setPlayers(data.data);
         }).catch((error) => {
             console.error(`Error during updatePlayers (Players) : ${error}`);
         }).finally(() => {
@@ -70,10 +72,15 @@ export default function Players() {
                 <Col className="text-center my-3" xs={12}>
                     <h1>Les joueurs{isValidGame(slug) && (` de ${getGameNameBySlug(slug)}`)}</h1>
                 </Col>
-                <Col xxl={11} xl={11} lg={12} md={12} sm={12} xs={10}>
+                <Col xxl={11} xl={11} lg={11} md={11} sm={12} xs={10}>
                     <Row className="justify-content-around my-2">
                         {loading && [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(skeleton => (<PlayerSkeleton key={skeleton} />))}
                         {!loading && players.map(player => (<PlayerItem key={player.id} player={player} />))}
+                        {!loading && players.length < 1 && (
+                            <div className="text-center">
+                                <h2>Aucun joueur trouvé. :(</h2>
+                            </div>
+                        )}
                     </Row>
                 </Col>
                 {page && perPage && maxResults && (

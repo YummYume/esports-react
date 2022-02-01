@@ -11,37 +11,39 @@ const HeaderNav = ({user, disconnectUser, loading}) => {
 
     if (false !== user) {
         return (
-            <Navbar.Collapse className="justify-content-end">
-                <Nav.Link disabled={loading}>Parier</Nav.Link>
-                <NavDropdown title="Matchs" id="matchesDropdown" disabled={loading}>
-                    {getAllAvailableGames().map((game) => (
-                        <NavDropdown.Item key={game.slug}>{game.name}</NavDropdown.Item>
-                    ))}
-                </NavDropdown>
-                <NavDropdown title="Equipes" id="teamsDropdown" disabled={loading}>
-                    {getAllAvailableGames().map((game) => (
-                        <NavDropdown.Item key={game.slug}>{game.name}</NavDropdown.Item>
-                    ))}
-                </NavDropdown>
-                <NavDropdown title="Joueurs" id="playersDropdown" disabled={loading}>
-                    {getAllAvailableGames().map((game) => (
-                        <NavDropdown.Item key={game.slug} onClick={() => navigate(`/players/${game.slug}`)}>{game.name}</NavDropdown.Item>
-                    ))}
-                </NavDropdown>
-                <NavDropdown title="Leagues" id="leaguesDropdown" disabled={loading}>
-                    {getAllAvailableGames().map((game) => (
-                        <NavDropdown.Item key={game.slug}>{game.name}</NavDropdown.Item>
-                    ))}
-                </NavDropdown>
-                <NavDropdown title={`${user.username} (${user.coins} jeton${user.coins > 1 ? 's' : ''})`} id="userDropdown" disabled={loading}>
-                    <NavDropdown.Item onClick={() => navigate('/menu')}>Accueil</NavDropdown.Item>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Item>Mon compte</NavDropdown.Item>
-                    <NavDropdown.Item>Mes paris</NavDropdown.Item>
-                    <NavDropdown.Item>Mes favoris</NavDropdown.Item>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Item onClick={() => disconnectUser(user)}>Déconnexion</NavDropdown.Item>
-                </NavDropdown>
+            <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
+                <Nav>
+                    <Nav.Link disabled={loading}>Parier</Nav.Link>
+                    <NavDropdown title="Matchs" id="matchesDropdown" disabled={loading}>
+                        {getAllAvailableGames().map((game) => (
+                            <NavDropdown.Item key={game.slug}>{game.name}</NavDropdown.Item>
+                        ))}
+                    </NavDropdown>
+                    <NavDropdown title="Equipes" id="teamsDropdown" disabled={loading}>
+                        {getAllAvailableGames().map((game) => (
+                            <NavDropdown.Item key={game.slug}>{game.name}</NavDropdown.Item>
+                        ))}
+                    </NavDropdown>
+                    <NavDropdown title="Joueurs" id="playersDropdown" disabled={loading}>
+                        {getAllAvailableGames().map((game) => (
+                            <NavDropdown.Item key={game.slug} onClick={() => navigate(`/players/${game.slug}`)}>{game.name}</NavDropdown.Item>
+                        ))}
+                    </NavDropdown>
+                    <NavDropdown title="Leagues" id="leaguesDropdown" disabled={loading}>
+                        {getAllAvailableGames().map((game) => (
+                            <NavDropdown.Item key={game.slug}>{game.name}</NavDropdown.Item>
+                        ))}
+                    </NavDropdown>
+                    <NavDropdown title={`${user.username} (${user.coins} jeton${user.coins > 1 ? 's' : ''})`} id="userDropdown" disabled={loading}>
+                        <NavDropdown.Item onClick={() => navigate('/menu')}>Accueil</NavDropdown.Item>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item>Mon compte</NavDropdown.Item>
+                        <NavDropdown.Item>Mes paris</NavDropdown.Item>
+                        <NavDropdown.Item>Mes favoris</NavDropdown.Item>
+                        <NavDropdown.Divider />
+                        <NavDropdown.Item onClick={() => disconnectUser(user)}>Déconnexion</NavDropdown.Item>
+                    </NavDropdown>
+                </Nav>
             </Navbar.Collapse>
         );
     }

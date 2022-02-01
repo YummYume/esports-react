@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 
 import HeaderNav from '../header/Nav';
@@ -19,8 +18,8 @@ export default function Header({user, updateUser, loading}) {
 
     return (
         <header>
-            <Navbar collapseOnSelect expand="lg" fixed="top" bg="dark" variant="dark">
-                <Container>
+            <Navbar expand="lg" fixed="top" bg="dark" variant="dark">
+                <Container fluid>
                     <Navbar.Brand onClick={() => !loading && navigate('/')}>
                         <img
                             alt="logo"
@@ -29,11 +28,10 @@ export default function Header({user, updateUser, loading}) {
                             height="30"
                             className="d-inline-block align-top"
                         />
-                        Esport Bettings
+                        Wide Esport Bettings
                     </Navbar.Brand>
-                    <Nav>
-                        <HeaderNav user={user} disconnectUser={disconnectUser} loading={loading} />
-                    </Nav>
+                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                    <HeaderNav user={user} disconnectUser={disconnectUser} loading={loading} />
                 </Container>
             </Navbar>
         </header>

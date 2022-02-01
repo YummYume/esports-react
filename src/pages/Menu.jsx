@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Container } from 'react-bootstrap';
 import { isLoggedIn } from '../api/user';
 import { useNavigate } from 'react-router-dom';

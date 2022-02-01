@@ -20,7 +20,7 @@ const PlayerItem = ({player}) => {
     );
 
     return (
-        <Col className="my-3" xxl={2} xl={3} lg={3} md={4} sm={6} xs={12}>
+        <Col className="my-3" xxl={2} xl={3} lg={3} md={4} sm={6} xs={11}>
             <ReactCardFlip isFlipped={flipped} flipDirection="horizontal">
                 <Card className={cardStyles.cardMinHeight}>
                     <Card.Img className={cardStyles.imgHeight} variant="top" src={player.image_url ?? 'https://c.tenor.com/KjUtiyx4GhwAAAAC/wide-vladimir-putin.gif'} />
@@ -29,7 +29,7 @@ const PlayerItem = ({player}) => {
                         {(player.name || player.last_name) && (
                             <Card.Text>
                                 <strong>{`${player.name ?? ''}${player.last_name ? ' ' + player.last_name : ''}`}</strong>
-                                {player.current_team ? ', joueur professionnel de la team ' : '.'}
+                                {player.current_team ? ', de la team ' : '.'}
                                 {player.current_team && (
                                     <OverlayTrigger
                                         placement="top"
