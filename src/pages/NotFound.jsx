@@ -16,7 +16,7 @@ export default function NotFound() {
                     <h1><UWU>Cette page n'existe pas. C'est vraiment dommage...</UWU></h1>
                 </Col>
                 <Col className="text-center" xs={12}>
-                    <Button size="lg" variant="outline-secondary" onClick={() => navigate('/')}>Accueil</Button>
+                    <Button size="lg" variant="outline-dark" onClick={() => navigate('/')}>Accueil</Button>
                 </Col>
             </Row>
         </Container>

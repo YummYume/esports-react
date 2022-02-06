@@ -5,8 +5,56 @@
       "username": "root",
       "password": "4813494d137e1631bba301d5acab6e7bb7aa74ce1185d456565ef51d737677b2",
       "coins": 100,
-      "token": "rcuw1o2z5gy6ev76jmi9s",
-      "lastLogin": "2022-02-01T07:51:18.337Z"
+      "token": null,
+      "lastLogin": "2022-02-05T18:15:42.995Z"
+    },
+    {
+      "username": "user1",
+      "password": "07480fb9e85b9396af06f006cf1c95024af2531c65fb505cfbd0add1e2f31573",
+      "coins": 100,
+      "token": null,
+      "lastLogin": null,
+      "id": 2
+    },
+    {
+      "username": "user2",
+      "password": "07480fb9e85b9396af06f006cf1c95024af2531c65fb505cfbd0add1e2f31573",
+      "coins": 100,
+      "token": null,
+      "lastLogin": null,
+      "id": 3
+    },
+    {
+      "username": "user3",
+      "password": "07480fb9e85b9396af06f006cf1c95024af2531c65fb505cfbd0add1e2f31573",
+      "coins": 100,
+      "token": null,
+      "lastLogin": null,
+      "id": 4
+    },
+    {
+      "username": "user4",
+      "password": "07480fb9e85b9396af06f006cf1c95024af2531c65fb505cfbd0add1e2f31573",
+      "coins": 100,
+      "token": null,
+      "lastLogin": null,
+      "id": 5
+    },
+    {
+      "username": "user5",
+      "password": "07480fb9e85b9396af06f006cf1c95024af2531c65fb505cfbd0add1e2f31573",
+      "coins": 100,
+      "token": null,
+      "lastLogin": null,
+      "id": 6
+    },
+    {
+      "username": "user6",
+      "password": "07480fb9e85b9396af06f006cf1c95024af2531c65fb505cfbd0add1e2f31573",
+      "coins": 100,
+      "token": null,
+      "lastLogin": null,
+      "id": 7
     }
   ]
 }

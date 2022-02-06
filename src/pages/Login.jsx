@@ -5,7 +5,9 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Spinner from 'react-bootstrap/Spinner';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Alert from 'react-bootstrap/Alert';
-import { Row, Col, Container } from 'react-bootstrap';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
 import useLocalStorage from '@dothq/react-use-localstorage';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,7 +43,7 @@ export default function Login({updateUser}) {
         });
     }, []);
 
-    const onSubmit = (e) => {
+    const onSubmit = async (e) => {
         e.preventDefault();
         const formData = e.currentTarget;
 
@@ -59,7 +61,7 @@ export default function Login({updateUser}) {
 
         setValidated(true);
 
-        getUserOrFalse(form.username, form.password).then(user => {
+        await getUserOrFalse(form.username, form.password).then(user => {
             if (user) {
                 user = generateToken(user);
                 setUserToken(user.token);
@@ -81,7 +83,7 @@ export default function Login({updateUser}) {
                 ...form,
                 [field]: value
             }
-        })
+        });
     };
 
     return (
@@ -124,7 +126,7 @@ export default function Login({updateUser}) {
                             </InputGroup>
                         </Form.Group>
                         <div className="text-center">
-                            <Button variant="outline-secondary" disabled={loading} type="submit">
+                            <Button variant="outline-light" disabled={loading} size="lg" type="submit">
                                 Connexion {loading &&
                                     <Spinner
                                         as="span"

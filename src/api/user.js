@@ -6,7 +6,7 @@ export const getUserOrFalse = async (username, password = null) => {
         username: username
     };
 
-    params && (params = { ...params, password: sha256(password).toString() });
+    password && (params = { ...params, password: sha256(password).toString() });
 
     const res = await axios.get(`${process.env.REACT_APP_DB_URL}/users`, {
         params : params
@@ -101,4 +101,32 @@ export const disconnect = async (user) => {
         console.error(`Error during disconnect : ${error.message}`);
         return false;
     }
+};
+
+export const register = async (user) => {
+    let registered = false;
+
+    try {
+        const newUser = {
+            ...user,
+            password: sha256(user.password).toString(),
+            coins: 100,
+            token: null,
+            lastLogin: null
+        };
+
+        await axios.post(`${process.env.REACT_APP_DB_URL}/users`, newUser, {
+            headers: {
+                header: 'Content-Type: application/json'
+            }
+        }).then((response) => {
+            registered = response.status === 201;
+        }).catch((error) => {
+            console.error(`Error during register : ${error.message}`);
+        });
+    } catch (error) {
+        console.error(`Error during register : ${error.message}`);
+    }
+
+    return registered;
 };

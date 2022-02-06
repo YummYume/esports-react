@@ -8,7 +8,7 @@ import ReactCardFlip from 'react-card-flip';
 import { FaArrowRight, FaArrowLeft } from 'react-icons/fa';
 import ReactCountryFlag from "react-country-flag";
 
-import cardStyles from '../../styles/Card.module.scss';
+import cardStyles from '../../styles/PlayerCard.module.scss';
 
 const PlayerItem = ({player}) => {
     const [flipped, setFlipped] = useState(false);
@@ -22,7 +22,7 @@ const PlayerItem = ({player}) => {
     return (
         <Col className="my-3" xxl={2} xl={3} lg={3} md={4} sm={6} xs={11}>
             <ReactCardFlip isFlipped={flipped} flipDirection="horizontal">
-                <Card className={cardStyles.cardMinHeight}>
+                <Card text="info" bg="dark" border="info" className={cardStyles.cardMinHeight}>
                     <Card.Img className={cardStyles.imgHeight} variant="top" src={player.image_url ?? 'https://c.tenor.com/KjUtiyx4GhwAAAAC/wide-vladimir-putin.gif'} />
                     <Card.Body>
                         <Card.Title>{player.name ?? 'Inconnu'}</Card.Title>
@@ -44,7 +44,7 @@ const PlayerItem = ({player}) => {
                         <FaArrowRight size="1.5em" className={cardStyles.iconPosition} onClick={() => flipped ? setFlipped(false) : setFlipped(true)} />
                     </Card.Body>
                 </Card>
-                <Card className={cardStyles.cardMinHeight}>
+                <Card text="info" bg="dark" border="info" className={cardStyles.cardMinHeight}>
                     <Card.Img className={cardStyles.imgHeight} variant="top" src={player.image_url ?? 'https://c.tenor.com/KjUtiyx4GhwAAAAC/wide-vladimir-putin.gif'} />
                     <Card.Body>
                         <Card.Title>{`${player.name ?? ''}${player.last_name ? ' ' + player.last_name : ''}`}</Card.Title>

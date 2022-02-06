@@ -3,14 +3,16 @@ import { Routes, Route } from "react-router-dom";
 import PacmanLoader from "react-spinners/PacmanLoader";
 import ScrollToTop from "react-scroll-to-top";
 
+import { getUserWithToken } from '../api/user';
+import styles from '../styles/App.module.scss';
 import Header from '../components/layout/Header';
 import Main from './Main';
 import Login from './Login';
 import Menu from './Menu';
 import Players from './Players';
 import NotFound from './NotFound';
-import { getUserWithToken } from '../api/user';
-import styles from '../styles/App.module.scss';
+import Leagues from './Leagues';
+import Register from './Register';
 
 export default function App() {
     const [loading, setLoading] = useState(true);
@@ -42,8 +44,10 @@ export default function App() {
             <Routes>
                 <Route path="/" element={<Main user={user} />} />
                 <Route path="/login" element={<Login updateUser={updateUser} />} />
+                <Route path="/register" element={<Register updateUser={updateUser} />} />
                 <Route path="/menu" element={<Menu updateUser={updateUser} />} />
                 <Route path="/players/:slug" element={<Players />} />
+                <Route path="/leagues/:slug" element={<Leagues />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
             <ScrollToTop smooth />

@@ -31,7 +31,7 @@ const HeaderNav = ({user, disconnectUser, loading}) => {
                     </NavDropdown>
                     <NavDropdown title="Leagues" id="leaguesDropdown" disabled={loading}>
                         {getAllAvailableGames().map((game) => (
-                            <NavDropdown.Item key={game.slug}>{game.name}</NavDropdown.Item>
+                            <NavDropdown.Item key={game.slug} onClick={() => navigate(`/leagues/${game.slug}`)}>{game.name}</NavDropdown.Item>
                         ))}
                     </NavDropdown>
                     <NavDropdown title={`${user.username} (${user.coins} jeton${user.coins > 1 ? 's' : ''})`} id="userDropdown" disabled={loading}>
@@ -52,7 +52,7 @@ const HeaderNav = ({user, disconnectUser, loading}) => {
         <Navbar.Collapse className="justify-content-end">
             <Nav.Link className="text-info" onClick={() => navigate('/login')} disabled={loading}>Connexion</Nav.Link>
             <Navbar.Text>ou</Navbar.Text>
-            <Nav.Link className="text-info" onClick={() => navigate('/login')} disabled={loading}>Inscription</Nav.Link>
+            <Nav.Link className="text-info" onClick={() => navigate('/register')} disabled={loading}>Inscription</Nav.Link>
         </Navbar.Collapse>
     );
 };
