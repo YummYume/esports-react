@@ -13,28 +13,33 @@ const HeaderNav = ({user, disconnectUser, loading}) => {
         return (
             <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
                 <Nav>
-                    <Nav.Link disabled={loading}>Parier</Nav.Link>
-                    <NavDropdown title="Matchs" id="matchesDropdown" disabled={loading}>
+                    <NavDropdown title="Matchs" id="matchesDropdown" align="end" menuVariant="dark" disabled={loading}>
                         {getAllAvailableGames().map((game) => (
                             <NavDropdown.Item key={game.slug}>{game.name}</NavDropdown.Item>
                         ))}
                     </NavDropdown>
-                    <NavDropdown title="Equipes" id="teamsDropdown" disabled={loading}>
+                    <NavDropdown title="Equipes" id="teamsDropdown" align="end" menuVariant="dark" disabled={loading}>
                         {getAllAvailableGames().map((game) => (
                             <NavDropdown.Item key={game.slug}>{game.name}</NavDropdown.Item>
                         ))}
                     </NavDropdown>
-                    <NavDropdown title="Joueurs" id="playersDropdown" disabled={loading}>
+                    <NavDropdown title="Joueurs" id="playersDropdown" align="end" menuVariant="dark" disabled={loading}>
                         {getAllAvailableGames().map((game) => (
                             <NavDropdown.Item key={game.slug} onClick={() => navigate(`/players/${game.slug}`)}>{game.name}</NavDropdown.Item>
                         ))}
                     </NavDropdown>
-                    <NavDropdown title="Leagues" id="leaguesDropdown" disabled={loading}>
+                    <NavDropdown title="Leagues" id="leaguesDropdown" align="end" menuVariant="dark" disabled={loading}>
                         {getAllAvailableGames().map((game) => (
                             <NavDropdown.Item key={game.slug} onClick={() => navigate(`/leagues/${game.slug}`)}>{game.name}</NavDropdown.Item>
                         ))}
                     </NavDropdown>
-                    <NavDropdown title={`${user.username} (${user.coins} jeton${user.coins > 1 ? 's' : ''})`} id="userDropdown" disabled={loading}>
+                    <NavDropdown title="Autres" id="othersDropdown" align="end" menuVariant="dark" disabled={loading}>
+                        <NavDropdown.Item>Les personnages de Dota 2</NavDropdown.Item>
+                        <NavDropdown.Item>Les personnages de League of Legends</NavDropdown.Item>
+                        <NavDropdown.Item>Les items de Dota 2</NavDropdown.Item>
+                        <NavDropdown.Item>Les items de League of Legends</NavDropdown.Item>
+                    </NavDropdown>
+                    <NavDropdown title={`${user.username} (${user.coins} jeton${user.coins > 1 ? 's' : ''})`} id="userDropdown" align="end" menuVariant="dark" disabled={loading}>
                         <NavDropdown.Item onClick={() => navigate('/menu')}>Accueil</NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item>Mon compte</NavDropdown.Item>

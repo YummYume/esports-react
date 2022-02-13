@@ -5,8 +5,8 @@
       "username": "root",
       "password": "4813494d137e1631bba301d5acab6e7bb7aa74ce1185d456565ef51d737677b2",
       "coins": 100,
-      "token": null,
-      "lastLogin": "2022-02-05T18:15:42.995Z"
+      "token": "mhekxqnunr07sen6z36bdk",
+      "lastLogin": "2022-02-08T16:18:46.547Z"
     },
     {
       "username": "user1",
@@ -55,6 +55,73 @@
       "token": null,
       "lastLogin": null,
       "id": 7
+    },
+    {
+      "username": "tesT1233",
+      "password": "a91fb321c5505eb930d899269e032f502582eea5e9471fe189fbb17aacfa0e27",
+      "coins": 100,
+      "token": null,
+      "lastLogin": null,
+      "id": 8
+    },
+    {
+      "username": "tesT1235",
+      "password": "25f69872e9a95d8732c9c7b16c2f16fdf6067a4ca1c1e904ef58cbf6a7c88213",
+      "coins": 100,
+      "token": null,
+      "lastLogin": null,
+      "id": 9
+    },
+    {
+      "username": "useR8976",
+      "password": "a35c46e3b108f30d59fc6a6df6ed448583e73fd04ac1b9e51c868e950770a2d2",
+      "coins": 100,
+      "token": null,
+      "lastLogin": null,
+      "id": 10
+    },
+    {
+      "username": "Form8888",
+      "password": "416ae0d03086a82d2135deb49040354029371e815c895f21dbf5d12b1ff8652a",
+      "coins": 100,
+      "token": null,
+      "lastLogin": null,
+      "id": 11
+    },
+    {
+      "username": "formTest88",
+      "password": "34a0967eba7b90519d99c0e66a9b62d65e4c226484b6c497fcdc4a7c5eaf20f5",
+      "coins": 100,
+      "token": null,
+      "lastLogin": null,
+      "id": 12
+    },
+    {
+      "username": "formTest888",
+      "password": "14b1f19c0f46dddadb13176aadb206a15988082dcf15170267624df78bf3adbc",
+      "coins": 100,
+      "token": null,
+      "lastLogin": "2022-02-08T13:31:08.753Z",
+      "id": 13
+    },
+    {
+      "username": "formTest889",
+      "password": "a87a8e3b78610df4438cfa0dec4b6760d5057dcb7207d51bc0e858c34e4c2436",
+      "coins": 100,
+      "token": null,
+      "lastLogin": null,
+      "id": 14
+    }
+  ],
+  "gifts": [
+    {
+      "id": 0,
+      "user": 1,
+      "claimed": false,
+      "claimedAt": null,
+      "amount": 100,
+      "timer": 20000,
+      "reason": "Vous avez obtenu 100 jetons supplémentaires pour votre première connexion! Attrapez les vite!"
     }
   ]
 }

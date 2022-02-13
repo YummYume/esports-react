@@ -9,27 +9,21 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container';
 import useLocalStorage from '@dothq/react-use-localstorage';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { getUserOrFalse, generateToken, isLoggedIn } from '../api/user';
 
 export default function Login({updateUser}) {
     const navigate = useNavigate();
+    const { state } = useLocation();
     const [userToken, setUserToken] = useLocalStorage('userToken', localStorage.getItem('userToken'));
     const [loading, setLoading] = useState(false);
     const [validated, setValidated] = useState(false);
     const [error, setError] = useState(false);
+    const [errorTimeout, setErrorTimeout] = useState(null);
     const [form, setForm] = useState({
         username: '',
-        password: ''
-    });
-
-    useEffect(() => {
-        if (false !== error) {
-            setTimeout(() => {
-                setError(false);
-            }, 4000);
-        }
+        password: '',
     });
 
     useEffect(() => {
@@ -43,18 +37,32 @@ export default function Login({updateUser}) {
         });
     }, []);
 
+    useEffect(() => {
+        state && state.username && (setForm({...form, username: state.username}));
+    }, [state]);
+
+    const showError = (error) => {
+        errorTimeout && (clearTimeout(errorTimeout));
+        setError(error);
+        if (error) {
+            setErrorTimeout(setTimeout(() => {
+                setError(false);
+            }, 5000));
+        }
+    };
+
     const onSubmit = async (e) => {
         e.preventDefault();
         const formData = e.currentTarget;
 
-        setError(false);
+        showError(false);
         setLoading(true);
 
         if (formData.checkValidity() === false) {
             setLoading(false);
             e.preventDefault();
             e.stopPropagation();
-            setError('Erreur dans le formulaire. Veuillez corriger les erreurs.');
+            showError('Erreur dans le formulaire. Veuillez corriger les erreurs.');
             setValidated(true);
             return;
         }
@@ -67,11 +75,11 @@ export default function Login({updateUser}) {
                 setUserToken(user.token);
                 navigate('/menu');
             } else {
-                setError('Nom d\'utilisateur ou mot de passe erroné.');
+                showError('Nom d\'utilisateur ou mot de passe erroné.');
             }
         }).catch((error) => {
             console.error(`Error during onSubmit (getUserOrFalse) : ${error}`);
-            setError('Une erreur est survenue.');
+            showError('Une erreur est survenue.');
         }).finally(() => {
             setLoading(false);
         });
@@ -97,28 +105,42 @@ export default function Login({updateUser}) {
                         {error}
                     </Alert>
                     <Form noValidate validated={validated} onSubmit={onSubmit}>
-                        <Form.Group className="mb-3" controlId="formUsername">
+                        <Form.Group className="mb-3" controlId="username">
                             <InputGroup hasValidation>
                                 <FloatingLabel
                                     controlId="floatingUsernameLabel"
                                     label="Nom d'utilisateur"
                                     className="mb-3 w-100"
                                 >
-                                    <Form.Control type="text" placeholder="Nom d'utilisateur" onInput={(e) => handleUserInput('username', e.target.value)} required/>
+                                    <Form.Control
+                                        type="text"
+                                        value={form.username}
+                                        placeholder="Nom d'utilisateur"
+                                        onInput={(e) => handleUserInput('username', e.target.value)}
+                                        disabled={loading}
+                                        required
+                                    />
                                     <Form.Control.Feedback type="invalid">
                                         Veuillez saisir votre nom d'utilisateur.
                                     </Form.Control.Feedback>
                                 </FloatingLabel>
                             </InputGroup>
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="formPassword">
+                        <Form.Group className="mb-3" controlId="password">
                             <InputGroup hasValidation>
                                 <FloatingLabel
                                     controlId="floatingPasswordLabel"
                                     label="Mot de passe"
                                     className="mb-3 w-100"
                                 >
-                                    <Form.Control type="password" placeholder="Mot de passe" onInput={(e) => handleUserInput('password', e.target.value)} required/>
+                                    <Form.Control
+                                        type="password"
+                                        value={form.password}
+                                        placeholder="Mot de passe"
+                                        onInput={(e) => handleUserInput('password', e.target.value)}
+                                        disabled={loading}
+                                        required
+                                    />
                                     <Form.Control.Feedback type="invalid">
                                         Veuillez saisir votre mot de passe.
                                     </Form.Control.Feedback>

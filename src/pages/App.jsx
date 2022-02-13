@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route } from "react-router-dom";
 import PacmanLoader from "react-spinners/PacmanLoader";
 import ScrollToTop from "react-scroll-to-top";
+import { useIdleTimer } from 'react-idle-timer';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
-import { getUserWithToken } from '../api/user';
+import { getUserWithToken, disconnect } from '../api/user';
 import styles from '../styles/App.module.scss';
 import Header from '../components/layout/Header';
 import Main from './Main';
@@ -13,16 +16,57 @@ import Players from './Players';
 import NotFound from './NotFound';
 import Leagues from './Leagues';
 import Register from './Register';
+import { useNavigate } from 'react-router-dom';
 
 export default function App() {
+    const handleOnIdle = async (event) => {
+        swal.fire({
+            icon: 'question',
+            title: <p className="text-dark">Êtes-vous vivants?</p>,
+            text: 'Ceci est une vraie question.',
+            confirmButtonText: 'Oui',
+            cancelButtonText: 'Non',
+            reverseButtons: true,
+            showCancelButton: true,
+            customClass: {
+                confirmButton: 'btn btn-success mx-2',
+                cancelButton: 'btn btn-danger mx-2',
+            },
+            buttonsStyling: false,
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+        }).then((result) => {
+            swal.fire({
+                icon: result.isConfirmed ? 'success' : 'error',
+                text: result.isConfirmed ? ':)' : ':(',
+            });
+
+            result.isDismissed && user && (
+                disconnect(user).then(() => {
+                    updateUser();
+                }).catch((error) => {
+                    console.error(`Error during handleOnIdle (App) : ${error}`);
+                })
+            );
+        });
+    };
+
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(false);
+    const swal = withReactContent(Swal);
+    const { getRemainingTime, getLastActiveTime } = useIdleTimer({
+        timeout: 120000,
+        onIdle: handleOnIdle,
+    });
 
     const updateUser = () => {
         setLoading(true);
+        const lastUser = user;
 
         getUserWithToken(JSON.parse(localStorage.getItem('userToken'))).then((userData) => {
             setUser(userData);
+            !userData && lastUser && (navigate('/'));
         }).catch((error) => {
             console.error(`Error during updateUser (App) : ${error}`);
         }).finally(() => {

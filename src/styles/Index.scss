@@ -27,6 +27,12 @@ h1, h2, h3, h4, h5, h6 {
     color: rgba(var(--bs-light-rgb), 1) !important;
 }
 
+hr:not(.dropdown-divider) {
+    border: 2px solid white !important;
+    border-radius: 5px !important;
+    opacity: 1 !important;
+}
+
 .page-item {
     &:not(.active, .disabled) {
         .page-link {
@@ -66,4 +72,8 @@ h1, h2, h3, h4, h5, h6 {
     .form-check-label {
         color: $app-danger !important;
     }
+}
+
+.offcanvas {
+    background-color: rgba(var(--bs-dark-rgb), 0.95) !important;
 }

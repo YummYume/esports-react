@@ -41,6 +41,7 @@ export default function Leagues() {
 
                 parseInt(params.get('page')) <= lastPage ? setPage(parseInt(params.get('page'))) : setPage(lastPage);
             } catch (error) {
+                console.error(`Error during updatePage (Leagues) : ${error}`);
                 setPage(1);
             }
         } else {
@@ -54,7 +55,6 @@ export default function Leagues() {
         getGameLeagues(slug, page, perPage).then((data) => {
             try {
                 setLeagues(data ? data.data ?? [] : []);
-                console.log(data)
                 setMaxResults(parseInt(data.headers['x-total']));
             } catch (error) {
                 console.error(`Error during updateLeagues (Leagues) : ${error}`);
@@ -79,7 +79,7 @@ export default function Leagues() {
                         {!loading && leagues.map(league => (<LeagueItem key={league.id} league={league} />))}
                         {!loading && leagues.length < 1 && (
                             <div className="text-center">
-                                <h2>Aucune leagues trouvée. :(</h2>
+                                <h2>Aucune league trouvée. :(</h2>
                             </div>
                         )}
                     </Row>

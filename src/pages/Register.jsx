@@ -102,7 +102,11 @@ export default function Register({updateUser}) {
                     allowOutsideClick: false,
                     allowEscapeKey: false,
                 }).then(() => {
-                    navigate('/login');
+                    navigate('/login', {
+                        state: {
+                            username: newUser.username,
+                        }
+                    });
                 });
             } else {
                 swal.fire({
