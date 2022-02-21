@@ -5,9 +5,9 @@ import ScrollToTop from "react-scroll-to-top";
 import { useIdleTimer } from 'react-idle-timer';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import { useNavigate } from 'react-router-dom';
 
 import { getUserWithToken, disconnect } from '../api/user';
-import styles from '../styles/App.module.scss';
 import Header from '../components/layout/Header';
 import Main from './Main';
 import Login from './Login';
@@ -16,7 +16,12 @@ import Players from './Players';
 import NotFound from './NotFound';
 import Leagues from './Leagues';
 import Register from './Register';
-import { useNavigate } from 'react-router-dom';
+import Matches from './Matches';
+import Teams from './Teams';
+import Heroes from './Heroes';
+import Items from './Items';
+
+import styles from '../styles/App.module.scss';
 
 export default function App() {
     const handleOnIdle = async (event) => {
@@ -92,6 +97,10 @@ export default function App() {
                 <Route path="/menu" element={<Menu updateUser={updateUser} />} />
                 <Route path="/players/:slug" element={<Players />} />
                 <Route path="/leagues/:slug" element={<Leagues />} />
+                <Route path="/teams/:slug" element={<Teams />} />
+                <Route path="/matches/:slug/:endpoint" element={<Matches />} />
+                <Route path="/heroes/:slug" element={<Heroes />} />
+                <Route path="/items/:slug" element={<Items />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>
             <ScrollToTop smooth />

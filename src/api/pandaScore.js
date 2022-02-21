@@ -34,15 +34,46 @@ export const getAllAvailableGames = () => {
     ];
 };
 
-export const isValidGame = (gameSlug) => {
-    return getAllAvailableGames().some((currentGame) => { return gameSlug === currentGame.slug });
-}
+export const getHeroesItemsAvailableGames = () => {
+    return [
+        {
+            name: 'Dota 2',
+            slug: 'dota2',
+            url: 'heroes',
+        },
+        {
+            name: 'League of Legends',
+            slug: 'lol',
+            url: 'champions',
+        }
+    ];
+};
 
-export const getGameNameBySlug = (gameSlug) => {
-    const game = getAllAvailableGames().find(gameData => gameData.slug === gameSlug);
+export const isValidGame = (gameSlug, heroesItemsOnly = false) => {
+    if (heroesItemsOnly) {
+        return getHeroesItemsAvailableGames().some((currentGame) => { return gameSlug === currentGame.slug });
+    }
+
+    return getAllAvailableGames().some((currentGame) => { return gameSlug === currentGame.slug });
+};
+
+export const getGameNameBySlug = (gameSlug, heroesItemsOnly = false) => {
+    let game;
+
+    if (heroesItemsOnly) {
+        game = getHeroesItemsAvailableGames().find(gameData => gameData.slug === gameSlug);
+    } else {
+        game = getAllAvailableGames().find(gameData => gameData.slug === gameSlug);
+    }
 
     return game ? game.name : '';
-}
+};
+
+export const getGameUrlBySlug = (gameSlug) => {
+    const game = getHeroesItemsAvailableGames().find(gameData => gameData.slug === gameSlug);
+
+    return game ? game.url : '';
+};
 
 export const getGameLeagues = async (game = null, page = null, perPage = null) => {
     const params = {
@@ -76,7 +107,7 @@ export const getGamePlayers = async (game = null, page = null, perPage = null) =
     });
 
     return players;
-}
+};
 
 export const getGameTeams = async (game = null, page = null, perPage = null) => {
     const params = {
@@ -93,14 +124,19 @@ export const getGameTeams = async (game = null, page = null, perPage = null) => 
     });
 
     return teams;
-}
+};
 
-export const getGameMatches = async (game = null, page = null, perPage = null) => {
+export const getGameMatches = async (endPoint, game = null, page = null, perPage = null) => {
     const endPoints = [
         'past',
         'running',
-        'upcoming'
+        'upcoming',
     ];
+
+    if (!endPoints.includes(endPoint)) {
+        return {};
+    }
+
     const params = {
         page: page ?? 1,
         per_page: perPage ?? 50
@@ -108,11 +144,49 @@ export const getGameMatches = async (game = null, page = null, perPage = null) =
     const queryString = isValidGame(game) ? `${game}/matches` : 'matches';
     let matches = null;
 
-    await axios.all(endPoints.map((endPoint) => pandaScoreQuery().get(`${queryString}/${endPoint}`, { params: params }).then((data) => {
+    await pandaScoreQuery().get(`${queryString}/${endPoint}`, { params: params }).then((data) => {
         matches = data;
     }).catch((error) => {
-        console.error(`Error during getGameMatches with game ${game} : ${error.message}`);
-    })));
+        console.error(`Error during getGameMatches with game ${game} and endPoint ${endPoint} : ${error.message}`);
+    });
 
     return matches;
-}
+};
+
+export const getGameHeroes = async (game = null, page = null, perPage = null) => {
+    if (!isValidGame(game, true)) {
+        return {};
+    }
+
+    const params = {
+        page: page ?? 1,
+        per_page: perPage ?? 50
+    };
+    const queryString = `${game}/${getGameUrlBySlug(game)}`;
+    let heroes = null;
+
+    await pandaScoreQuery().get(queryString, { params: params }).then((data) => {
+        heroes = data;
+    }).catch((error) => {
+        console.error(`Error during getGameHeroes with game ${game} : ${error.message}`);
+    });
+
+    return heroes;
+};
+
+export const getGameItems = async (game = null, page = null, perPage = null) => {
+    const params = {
+        page: page ?? 1,
+        per_page: perPage ?? 50
+    };
+    const queryString = isValidGame(game, true) ? `${game}/items` : 'items';
+    let items = null;
+
+    await pandaScoreQuery().get(queryString, { params: params }).then((data) => {
+        items = data;
+    }).catch((error) => {
+        console.error(`Error during getGameItems with game ${game} : ${error.message}`);
+    });
+
+    return items;
+};

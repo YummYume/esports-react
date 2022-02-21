@@ -8,8 +8,8 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import cardStyles from '../../../styles/LeagueCard.module.scss';
 
 const TeamSkeleton = () => (
-    <Col className="my-3" md={6} sm={12} xs={12}>
-        <Card className={cardStyles.cardMinHeight}>
+    <Col className="my-3" xxl={4} md={6} xs={12}>
+        <Card text="light" bg="dark" border="light" className={cardStyles.cardMinHeight}>
             <Card.Body>
                 <Row className="h-100">
                     <Col xs={4}>

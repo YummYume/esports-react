@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useNavigate } from 'react-router-dom';
 
-import { getAllAvailableGames } from '../../api/pandaScore';
+import { getAllAvailableGames, getHeroesItemsAvailableGames } from '../../api/pandaScore';
 
 const HeaderNav = ({user, disconnectUser, loading}) => {
     const navigate = useNavigate();
@@ -15,12 +15,12 @@ const HeaderNav = ({user, disconnectUser, loading}) => {
                 <Nav>
                     <NavDropdown title="Matchs" id="matchesDropdown" align="end" menuVariant="dark" disabled={loading}>
                         {getAllAvailableGames().map((game) => (
-                            <NavDropdown.Item key={game.slug}>{game.name}</NavDropdown.Item>
+                            <NavDropdown.Item key={game.slug} onClick={() => navigate(`/matches/${game.slug}/upcoming`)}>{game.name}</NavDropdown.Item>
                         ))}
                     </NavDropdown>
                     <NavDropdown title="Equipes" id="teamsDropdown" align="end" menuVariant="dark" disabled={loading}>
                         {getAllAvailableGames().map((game) => (
-                            <NavDropdown.Item key={game.slug}>{game.name}</NavDropdown.Item>
+                            <NavDropdown.Item key={game.slug} onClick={() => navigate(`/teams/${game.slug}`)}>{game.name}</NavDropdown.Item>
                         ))}
                     </NavDropdown>
                     <NavDropdown title="Joueurs" id="playersDropdown" align="end" menuVariant="dark" disabled={loading}>
@@ -34,10 +34,12 @@ const HeaderNav = ({user, disconnectUser, loading}) => {
                         ))}
                     </NavDropdown>
                     <NavDropdown title="Autres" id="othersDropdown" align="end" menuVariant="dark" disabled={loading}>
-                        <NavDropdown.Item>Les personnages de Dota 2</NavDropdown.Item>
-                        <NavDropdown.Item>Les personnages de League of Legends</NavDropdown.Item>
-                        <NavDropdown.Item>Les items de Dota 2</NavDropdown.Item>
-                        <NavDropdown.Item>Les items de League of Legends</NavDropdown.Item>
+                        {getHeroesItemsAvailableGames().map((game) => (
+                            <NavDropdown.Item key={game.slug} onClick={() => navigate(`/heroes/${game.slug}`)}>Les personnages de {game.name}</NavDropdown.Item>
+                        ))}
+                        {getHeroesItemsAvailableGames().map((game) => (
+                            <NavDropdown.Item key={game.url} onClick={() => navigate(`/items/${game.slug}`)}>Les items de {game.name}</NavDropdown.Item>
+                        ))}
                     </NavDropdown>
                     <NavDropdown title={`${user.username} (${user.coins} jeton${user.coins > 1 ? 's' : ''})`} id="userDropdown" align="end" menuVariant="dark" disabled={loading}>
                         <NavDropdown.Item onClick={() => navigate('/menu')}>Accueil</NavDropdown.Item>
@@ -54,7 +56,7 @@ const HeaderNav = ({user, disconnectUser, loading}) => {
     }
 
     return (
-        <Navbar.Collapse className="justify-content-end">
+        <Navbar.Collapse id="responsive-navbar-nav" className="justify-content-end">
             <Nav.Link className="text-info" onClick={() => navigate('/login')} disabled={loading}>Connexion</Nav.Link>
             <Navbar.Text>ou</Navbar.Text>
             <Nav.Link className="text-info" onClick={() => navigate('/register')} disabled={loading}>Inscription</Nav.Link>

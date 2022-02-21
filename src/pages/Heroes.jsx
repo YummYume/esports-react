@@ -3,15 +3,15 @@ import { Row, Col, Container } from 'react-bootstrap';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useWindowWidth } from '@react-hook/window-size';
 
-import { isValidGame, getGameNameBySlug, getGameLeagues } from '../api/pandaScore';
-import LeagueSkeleton from '../components/leagues/skeleton/LeagueSkeleton';
-import LeagueItem from '../components/leagues/LeagueItem';
+import { getGameHeroes, isValidGame, getGameNameBySlug } from '../api/pandaScore';
+import HeroSkeleton from '../components/heroes/skeleton/HeroSkeleton';
+import HeroItem from '../components/heroes/HeroItem';
 import styles from '../styles/App.module.scss';
 import Pagination from '../components/common/Pagination';
 
-export default function Leagues() {
+export default function Heroes() {
     const [loading, setLoading] = useState(true);
-    const [leagues, setLeagues] = useState([]);
+    const [heroes, setHeroes] = useState([]);
     const [page, setPage] = useState(null);
     const [perPage, setPerPage] = useState(null);
     const [maxResults, setMaxResults] = useState(null);
@@ -21,7 +21,7 @@ export default function Leagues() {
 
     useEffect(() => {
         updatePage();
-        page && (updateLeagues());
+        page && (updateHeroes());
     }, [slug, page, perPage]);
 
     useEffect(() => {
@@ -41,7 +41,6 @@ export default function Leagues() {
 
                 parseInt(params.get('page')) <= lastPage ? setPage(parseInt(params.get('page'))) : setPage(lastPage);
             } catch (error) {
-                console.error(`Error during updatePage (Leagues) : ${error}`);
                 setPage(1);
             }
         } else {
@@ -49,19 +48,19 @@ export default function Leagues() {
         }
     };
 
-    const updateLeagues = () => {
+    const updateHeroes = () => {
         false === loading && (setLoading(true));
 
-        getGameLeagues(slug, page, perPage).then((data) => {
+        getGameHeroes(slug, page, perPage).then((data) => {
             try {
-                setLeagues(data ? data.data ?? [] : []);
+                setHeroes(data ? data.data ?? [] : []);
                 setMaxResults(parseInt(data.headers['x-total']));
             } catch (error) {
-                console.error(`Error during updateLeagues (Leagues) : ${error}`);
+                console.error(`Error during updateHeroes (Heroes) : ${error}`);
                 setMaxResults(null);
             }
         }).catch((error) => {
-            console.error(`Error during updateLeagues (Leagues) : ${error}`);
+            console.error(`Error during updateHeroes (Heroes) : ${error}`);
         }).finally(() => {
             setLoading(false);
         });
@@ -71,15 +70,15 @@ export default function Leagues() {
         <Container className="align-items-center" fluid>
             <Row className={`${styles.minWdScreenTitle} justify-content-center my-2`}>
                 <Col className="text-center my-3" xs={12}>
-                    <h1>Les leagues{isValidGame(slug) && (` de ${getGameNameBySlug(slug)}`)}</h1>
+                    <h1>Les personnages{isValidGame(slug, true) && (` de ${getGameNameBySlug(slug)}`)}</h1>
                 </Col>
                 <Col xxl={11} xl={11} lg={11} md={11} sm={12} xs={10}>
                     <Row className="justify-content-around my-2">
-                        {loading && [...Array(20).keys()].map(skeleton => (<LeagueSkeleton key={skeleton} />))}
-                        {!loading && leagues.map(league => (<LeagueItem key={league.id} league={league} />))}
-                        {!loading && leagues.length < 1 && (
+                        {loading && [...Array(20).keys()].map(skeleton => (<HeroSkeleton key={skeleton} />))}
+                        {!loading && heroes.map(hero => (<HeroItem key={hero.id} hero={hero} />))}
+                        {!loading && heroes.length < 1 && (
                             <div className="text-center">
-                                <h2>Aucune league trouvée. :(</h2>
+                                <h2>Aucun personnage trouvé. :(</h2>
                             </div>
                         )}
                     </Row>

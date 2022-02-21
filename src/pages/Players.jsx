@@ -74,7 +74,7 @@ export default function Players() {
                 </Col>
                 <Col xxl={11} xl={11} lg={11} md={11} sm={12} xs={10}>
                     <Row className="justify-content-around my-2">
-                        {loading && [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map(skeleton => (<PlayerSkeleton key={skeleton} />))}
+                        {loading && [...Array(20).keys()].map(skeleton => (<PlayerSkeleton key={skeleton} />))}
                         {!loading && players.map(player => (<PlayerItem key={player.id} player={player} />))}
                         {!loading && players.length < 1 && (
                             <div className="text-center">

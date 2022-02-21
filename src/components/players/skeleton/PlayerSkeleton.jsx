@@ -7,8 +7,8 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import cardStyles from '../../../styles/PlayerCard.module.scss';
 
 const PlayerSkeleton = () => (
-    <Col className="my-3" xxl={2} xl={3} md={4} sm={6} xs={12}>
-        <Card bg="dark" className={cardStyles.cardMinHeight}>
+    <Col className="my-3" xxl={2} xl={3} md={4} sm={6} xs={11}>
+        <Card text="light" bg="dark" border="light" className={cardStyles.cardMinHeight}>
             <Card.Body>
                 <Skeleton baseColor="#6c757d" highlightColor="#97999b" count={1} height={150} />
                 <Card.Title className="mt-2">
