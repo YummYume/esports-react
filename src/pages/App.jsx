@@ -96,7 +96,7 @@ export default function App() {
                 <Route path="/register" element={<Register updateUser={updateUser} />} />
                 <Route path="/menu" element={<Menu updateUser={updateUser} />} />
                 <Route path="/players/:slug" element={<Players />} />
-                <Route path="/leagues/:slug" element={<Leagues />} />
+                <Route path="/leagues/:slug" element={<Leagues user={user} />} />
                 <Route path="/teams/:slug" element={<Teams />} />
                 <Route path="/matches/:slug/:endpoint" element={<Matches />} />
                 <Route path="/heroes/:slug" element={<Heroes />} />

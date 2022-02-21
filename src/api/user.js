@@ -87,7 +87,7 @@ export const disconnect = async (user) => {
                 header: 'Content-Type: application/json'
             }
         }).then((response) => {
-            if (response.status === 200) {
+            if (200 === response.status) {
                 localStorage.removeItem('userToken');
                 return true;
             }
@@ -129,4 +129,72 @@ export const register = async (user) => {
     }
 
     return registered;
+};
+
+export const getFavouriteLeagues = async (user) => {
+    const params = {
+        user_id: user.id,
+    };
+
+    const res = await axios.get(`${process.env.REACT_APP_DB_URL}/favourites`, {
+        params : params
+    });
+
+    return res.data ?? [];
+};
+
+export const getFavouriteLeague = async (user, league) => {
+    const params = {
+        user_id: user.id,
+        league_id: league.id,
+    };
+
+    const res = await axios.get(`${process.env.REACT_APP_DB_URL}/favourites`, {
+        params : params,
+    });
+
+    return res.data.length ? res.data[0] : null;
+};
+
+export const addFavouriteLeague = async (user, league) => {
+    const isFavourite = await getFavouriteLeague(user, league);
+
+    if (isFavourite) {
+        return false;
+    }
+
+    let favourite = null;
+
+    try {
+        const newFavourite = {
+            user_id: user.id,
+            league_id: league.id,
+            league_name: league.name,
+            league_picture: league.image_url,
+        };
+
+        await axios.post(`${process.env.REACT_APP_DB_URL}/favourites`, newFavourite, {
+            headers: {
+                header: 'Content-Type: application/json'
+            }
+        }).then((response) => {
+            favourite = response.data;
+        }).catch((error) => {
+            console.error(`Error during addFavouriteLeague : ${error.message}`);
+        });
+    } catch (error) {
+        console.error(`Error during addFavouriteLeague : ${error.message}`);
+    }
+
+    return favourite;
+};
+
+export const removeFavouriteLeague = async (favourite) => {
+    const response = await axios.delete(`${process.env.REACT_APP_DB_URL}/favourites/${favourite.id}`, {
+        headers: {
+            header: 'Content-Type: application/json'
+        },
+    });
+
+    return 200 === response.status ? null : favourite;
 };

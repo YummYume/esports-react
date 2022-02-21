@@ -9,7 +9,7 @@ import LeagueItem from '../components/leagues/LeagueItem';
 import styles from '../styles/App.module.scss';
 import Pagination from '../components/common/Pagination';
 
-export default function Leagues() {
+export default function Leagues({user}) {
     const [loading, setLoading] = useState(true);
     const [leagues, setLeagues] = useState([]);
     const [page, setPage] = useState(null);
@@ -76,7 +76,7 @@ export default function Leagues() {
                 <Col xxl={11} xl={11} lg={11} md={11} sm={12} xs={10}>
                     <Row className="justify-content-around my-2">
                         {loading && [...Array(20).keys()].map(skeleton => (<LeagueSkeleton key={skeleton} />))}
-                        {!loading && leagues.map(league => (<LeagueItem key={league.id} league={league} />))}
+                        {!loading && leagues.map(league => (<LeagueItem key={league.id} league={league} user={user} />))}
                         {!loading && leagues.length < 1 && (
                             <div className="text-center">
                                 <h2>Aucune league trouvée. :(</h2>
@@ -84,7 +84,7 @@ export default function Leagues() {
                         )}
                     </Row>
                 </Col>
-                {(0 < page && 0 < perPage && 0 < maxResults) (
+                {(0 < page && 0 < perPage && 0 < maxResults) && (
                     <Col className="my-4" xs={12}>
                         <div className="d-flex align-items-center justify-content-center">
                             <Pagination page={page} perPage={perPage} maxResults={maxResults} />

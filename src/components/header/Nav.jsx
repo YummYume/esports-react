@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useNavigate } from 'react-router-dom';
 
 import { getAllAvailableGames, getHeroesItemsAvailableGames } from '../../api/pandaScore';
+import UserFavouriteLeagues from '../common/UserFavouriteLeagues';
 
 const HeaderNav = ({user, disconnectUser, loading}) => {
+    const [showFavouriteLeagues, setShowFavouriteLeagues] = useState(false);
     const navigate = useNavigate();
+
+    const handleFavouriteLeaguesShow = () => setShowFavouriteLeagues(true);
+    const handleFavouriteLeaguesClose = () => setShowFavouriteLeagues(false);
 
     if (false !== user) {
         return (
@@ -46,11 +51,12 @@ const HeaderNav = ({user, disconnectUser, loading}) => {
                         <NavDropdown.Divider />
                         <NavDropdown.Item>Mon compte</NavDropdown.Item>
                         <NavDropdown.Item>Mes paris</NavDropdown.Item>
-                        <NavDropdown.Item>Mes favoris</NavDropdown.Item>
+                        <NavDropdown.Item onClick={handleFavouriteLeaguesShow}>Mes ligues favorites</NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item onClick={() => disconnectUser(user)}>Déconnexion</NavDropdown.Item>
                     </NavDropdown>
                 </Nav>
+                <UserFavouriteLeagues user={user} show={showFavouriteLeagues} handleClose={handleFavouriteLeaguesClose} />
             </Navbar.Collapse>
         );
     }
