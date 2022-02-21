@@ -33,8 +33,8 @@ export default function Matches() {
     }, [params]);
 
     useEffect(() => {
-        width < 992 && perPage !== 20 && (setPerPage(20));
-        width >= 992 && perPage !== 40 && (setPerPage(40));
+        width < 1200 && perPage !== 20 && (setPerPage(20));
+        width >= 1200 && perPage !== 40 && (setPerPage(40));
     }, [width]);
 
     const updatePage = () => {
@@ -86,7 +86,7 @@ export default function Matches() {
                 <Col xxl={11} xl={11} lg={11} md={11} sm={12} xs={10}>
                     <Row className="justify-content-around my-2">
                         {loading && [...Array(20).keys()].map(skeleton => (<MatchSkeleton key={skeleton} />))}
-                        {!loading && matches.map(match => match.opponents.length > 1 && (<MatchItem key={match.id} match={match} />))}
+                        {!loading && matches.map(match => match.opponents.length > 1 && (<MatchItem key={match.id} match={match} endpoint={endpoint} />))}
                         {!loading && matches.length < 1 && (
                             <div className="text-center">
                                 <h2>Aucun match trouvé. :(</h2>
@@ -94,7 +94,7 @@ export default function Matches() {
                         )}
                     </Row>
                 </Col>
-                {page && perPage && maxResults && (
+                {(0 < page && 0 < perPage && 0 < maxResults) && (
                     <Col className="my-4" xs={12}>
                         <div className="d-flex align-items-center justify-content-center">
                             <Pagination page={page} perPage={perPage} maxResults={maxResults} />

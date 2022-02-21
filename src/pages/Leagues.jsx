@@ -84,7 +84,7 @@ export default function Leagues() {
                         )}
                     </Row>
                 </Col>
-                {page && perPage && maxResults && (
+                {(0 < page && 0 < perPage && 0 < maxResults) (
                     <Col className="my-4" xs={12}>
                         <div className="d-flex align-items-center justify-content-center">
                             <Pagination page={page} perPage={perPage} maxResults={maxResults} />
