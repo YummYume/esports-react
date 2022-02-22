@@ -1,3 +1,12 @@
+# To run
+- Create a copy of the `db.json.dist` file and name it `db.json` (in the root directory)
+- Create a copy of the `.env` file and name it `.env.local` (in the root directory)
+- Add your pandaScore API key in your `.env.local` file (key: `REACT_APP_PANDASCORE_API_TOKEN`)
+- Run `npm i`
+- Run `npm start`
+
+The root account already exists, with root as password.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
