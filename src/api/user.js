@@ -121,6 +121,7 @@ export const register = async (user) => {
             }
         }).then((response) => {
             registered = response.status === 201;
+            addGift(response.data, 100, 'Vous avez obtenu 100 jetons supplémentaires pour votre première connexion. Attrapez les vite!', 20000);
         }).catch((error) => {
             console.error(`Error during register : ${error.message}`);
         });
@@ -197,4 +198,89 @@ export const removeFavouriteLeague = async (favourite) => {
     });
 
     return 200 === response.status ? null : favourite;
+};
+
+export const findGifts = async (user) => {
+    const params = {
+        user: user.id,
+        claimed: false,
+    };
+
+    const res = await axios.get(`${process.env.REACT_APP_DB_URL}/gifts`, {
+        params : params
+    });
+
+    return res.data ?? [];
+};
+
+export const addGift = async (user, amount, reason = '', timer = 0) => {
+    let added = false;
+
+    try {
+        const gift = {
+            user: user.id,
+            amount: amount,
+            claimed: false,
+            claimedAt: null,
+            reason: reason,
+            timer: timer,
+        };
+
+        await axios.post(`${process.env.REACT_APP_DB_URL}/gifts`, gift, {
+            headers: {
+                header: 'Content-Type: application/json'
+            }
+        }).then((response) => {
+            added = response.status === 201;
+        }).catch((error) => {
+            console.error(`Error during addGift : ${error.message}`);
+        });
+    } catch (error) {
+        console.error(`Error during addGift : ${error.message}`);
+    }
+
+    return added;
+};
+
+export const claimGift = async (gift, user) => {
+    const claimedGift = {
+        ...gift,
+        claimed: true,
+        claimedAt: new Date(),
+    };
+    let claimed = false;
+
+    await axios.put(`${process.env.REACT_APP_DB_URL}/gifts/${gift.id}`, claimedGift, {
+        headers: {
+            header: 'Content-Type: application/json'
+        }
+    }).then((res) => {
+        claimed = 200 === res.status;
+    }).catch((error) => {
+        console.error(`Error during claimGift : ${error.message}`);
+    });
+
+    const res = await addCoins(user, gift.amount);
+
+    return claimed && res;
+}
+
+export const addCoins = async (user, amount, remove = false) => {
+    const userWithNewCoins = {
+        ...user,
+        coins: remove ? user.coins - amount : user.coins + amount,
+    };
+    let added = false;
+
+    await axios.put(`${process.env.REACT_APP_DB_URL}/users/${user.id}`, userWithNewCoins, {
+        headers: {
+            header: 'Content-Type: application/json'
+        }
+    }).then((res) => {
+        added = 200 === res.status;
+    }).catch((error) => {
+        console.error(`Error during claimGift : ${error.message}`);
+    });
+
+    return added ? userWithNewCoins : false;
 };

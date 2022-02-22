@@ -33,7 +33,7 @@ const HeaderNav = ({user, disconnectUser, loading}) => {
                             <NavDropdown.Item key={game.slug} onClick={() => navigate(`/players/${game.slug}`)}>{game.name}</NavDropdown.Item>
                         ))}
                     </NavDropdown>
-                    <NavDropdown title="Leagues" id="leaguesDropdown" align="end" menuVariant="dark" disabled={loading}>
+                    <NavDropdown title="Ligues" id="leaguesDropdown" align="end" menuVariant="dark" disabled={loading}>
                         {getAllAvailableGames().map((game) => (
                             <NavDropdown.Item key={game.slug} onClick={() => navigate(`/leagues/${game.slug}`)}>{game.name}</NavDropdown.Item>
                         ))}

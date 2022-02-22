@@ -4,9 +4,12 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import Spinner from 'react-bootstrap/Spinner';
+import Button from 'react-bootstrap/Button';
 
 import { getFavouriteLeagues } from '../../api/user';
 import FavouriteButton from '../leagues/FavouriteButton';
+
+import styles from '../../styles/UserFavouriteLeagues.module.scss';
 
 export default function UserFavouriteLeagues({user, show, handleClose}) {
     const [loading, setLoading] = useState(true);
@@ -18,7 +21,7 @@ export default function UserFavouriteLeagues({user, show, handleClose}) {
         getFavouriteLeagues(user).then((data) => {
             setFavourites(data);
         }).catch((error) => {
-            console.error(`Error during useEffect (UserFavouriteLeagues) : ${error}`);
+            console.error(`Error during updateFavorites (UserFavouriteLeagues) : ${error}`);
         }).finally(() => {
             setLoading(false);
         });
@@ -26,7 +29,7 @@ export default function UserFavouriteLeagues({user, show, handleClose}) {
 
     useEffect(() => {
         updateFavorites();
-    }, []);
+    }, [show]);
 
     return (
         <Offcanvas show={show} onHide={handleClose} placement="start" className="text-white">
@@ -35,7 +38,7 @@ export default function UserFavouriteLeagues({user, show, handleClose}) {
             </Offcanvas.Header>
             <Offcanvas.Body>
                 <Row>
-                    <Col xs={12}>
+                    <Col xs={12} className="text-center">
                         {!loading && (
                             favourites.map(favourite => {
                                 return (
@@ -47,10 +50,11 @@ export default function UserFavouriteLeagues({user, show, handleClose}) {
                                             <Image
                                                 rounded={true}
                                                 src={favourite.league_picture ?? 'https://c.tenor.com/ETlOjJ8aU7EAAAAC/za-warudo-jojo-bizarre-adventure.gif'}
-                                                className="w-100"
+                                                className={`${styles.imgHeight}`}
                                             />
                                         </Col>
                                         <Col className="mt-2" xs={12}>
+                                            <Button className="my-1 mx-1 w-100" variant="outline-light">Voir les matchs</Button>
                                             <FavouriteButton
                                                 user={user}
                                                 league={{
@@ -68,7 +72,7 @@ export default function UserFavouriteLeagues({user, show, handleClose}) {
                             }, null)
                         )}
                         {loading && (
-                            <Spinner />
+                            <Spinner animation="border" variant="light" />
                         )}
                     </Col>
                 </Row>

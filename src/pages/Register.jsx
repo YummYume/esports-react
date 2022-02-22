@@ -66,7 +66,7 @@ export default function Register({updateUser}) {
 
         if (/\s/.test(value)) {
             error = 'Le mot de passe ne doit pas contenir d\'espace.';
-        } else if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/.test(value)) {
+        } else if (!/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/.test(value)) {
             error = 'Votre mot de passe doit contenir un minimum de 8 caractères, dont 1 nombre, une lettre majuscule et une lettre minuscule.'
         }
 

@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
 
-import { getUserWithToken, disconnect } from '../api/user';
+import { getUserWithToken, disconnect, findGifts, claimGift } from '../api/user';
 import Header from '../components/layout/Header';
 import Main from './Main';
 import Login from './Login';
@@ -65,11 +65,13 @@ export default function App() {
         onIdle: handleOnIdle,
     });
 
-    const updateUser = () => {
+    const updateUser = async () => {
         setLoading(true);
         const lastUser = user;
+        let newUser = null;
 
-        getUserWithToken(JSON.parse(localStorage.getItem('userToken'))).then((userData) => {
+        await getUserWithToken(JSON.parse(localStorage.getItem('userToken'))).then((userData) => {
+            newUser = userData;
             setUser(userData);
             !userData && lastUser && (navigate('/'));
         }).catch((error) => {
@@ -79,6 +81,47 @@ export default function App() {
                 setLoading(false);
             }, 500);
         });
+
+        if (newUser) {
+            findGifts(newUser).then((userGifts) => {
+                if (userGifts.length) {
+                    let currentGift = userGifts[0];
+                    swal.fire({
+                        icon: 'info',
+                        title: 'Un cadeau!',
+                        text: currentGift.reason,
+                        timer: currentGift.timer,
+                        timerProgressBar: currentGift.timer > 0,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonText: 'Récupérer',
+                        customClass: {
+                            title: 'text-dark',
+                        },
+                        preConfirm: () => {
+                            return claimGift(currentGift, newUser);
+                        },
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Cadeau récupéré',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                confirmButtonText: 'Merci!',
+                                customClass: {
+                                    title: 'text-dark',
+                                },
+                            }).then(() => {
+                                updateUser();
+                            })
+                        }
+                    });
+                }
+            }).catch((error) => {
+                console.error(`Error during updateUser (App) : ${error}`);
+            });
+        }
     };
 
     useEffect(() => {

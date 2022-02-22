@@ -71,7 +71,7 @@ export default function Leagues({user}) {
         <Container className="align-items-center" fluid>
             <Row className={`${styles.minWdScreenTitle} justify-content-center my-2`}>
                 <Col className="text-center my-3" xs={12}>
-                    <h1>Les leagues{isValidGame(slug) && (` de ${getGameNameBySlug(slug)}`)}</h1>
+                    <h1>Les ligues{isValidGame(slug) && (` de ${getGameNameBySlug(slug)}`)}</h1>
                 </Col>
                 <Col xxl={11} xl={11} lg={11} md={11} sm={12} xs={10}>
                     <Row className="justify-content-around my-2">
@@ -79,7 +79,7 @@ export default function Leagues({user}) {
                         {!loading && leagues.map(league => (<LeagueItem key={league.id} league={league} user={user} />))}
                         {!loading && leagues.length < 1 && (
                             <div className="text-center">
-                                <h2>Aucune league trouvée. :(</h2>
+                                <h2>Aucune ligue trouvée. :(</h2>
                             </div>
                         )}
                     </Row>
