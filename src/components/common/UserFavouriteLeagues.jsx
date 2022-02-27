@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Image from 'react-bootstrap/Image';
 import Spinner from 'react-bootstrap/Spinner';
 import Button from 'react-bootstrap/Button';
+import { useNavigate } from 'react-router-dom';
 
 import { getFavouriteLeagues } from '../../api/user';
 import FavouriteButton from '../leagues/FavouriteButton';
@@ -14,6 +15,7 @@ import styles from '../../styles/UserFavouriteLeagues.module.scss';
 export default function UserFavouriteLeagues({user, show, handleClose}) {
     const [loading, setLoading] = useState(true);
     const [favourites, setFavourites] = useState([]);
+    const navigate = useNavigate();
 
     const updateFavorites = async () => {
         setLoading(true);
@@ -28,7 +30,7 @@ export default function UserFavouriteLeagues({user, show, handleClose}) {
     };
 
     useEffect(() => {
-        updateFavorites();
+        show && (updateFavorites());
     }, [show]);
 
     return (
@@ -54,7 +56,7 @@ export default function UserFavouriteLeagues({user, show, handleClose}) {
                                             />
                                         </Col>
                                         <Col className="mt-2" xs={12}>
-                                            <Button className="my-1 mx-1 w-100" variant="outline-light">Voir les matchs</Button>
+                                            <Button className="my-1 mx-1 w-100" variant="outline-light" onClick={() => navigate(`/leagues/matches/${favourite.league_id}/upcoming`)}>Voir les matchs</Button>
                                             <FavouriteButton
                                                 user={user}
                                                 league={{

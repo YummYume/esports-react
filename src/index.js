@@ -6,6 +6,8 @@ import { BrowserRouter } from "react-router-dom";
 
 import './styles/Index.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 
 ReactDOM.render(
     <React.StrictMode>

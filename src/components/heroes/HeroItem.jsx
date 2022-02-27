@@ -9,9 +9,11 @@ const HeroItem = ({hero}) => {
         <Col className="my-3" xxl={2} xl={4} lg={4} md={5} sm={6} xs={11}>
             <Card text="light" bg="dark" border="light" className={cardStyles.cardMinHeight}>
                 <Card.Img className={cardStyles.imgHeight} variant="top" src={
-                    hero.big_image_url
-                    ?? hero.image_url
-                    ?? 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/marci.png'
+                    hero.big_image_url ? hero.big_image_url
+                    : hero.image_url ? hero.image_url
+                    : 'Marci' === hero.localized_name ? '/images/marci.png'
+                    : 'Primal Beast' === hero.localized_name ? '/images/primal_beast.png'
+                    : 'https://i.imgflip.com/slxyb.jpg'
                 } />
                 <Card.Body>
                     <Card.Title>{hero.localized_name ?? hero.name ?? 'Inconnu'}</Card.Title>

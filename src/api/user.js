@@ -266,9 +266,10 @@ export const claimGift = async (gift, user) => {
 }
 
 export const addCoins = async (user, amount, remove = false) => {
+    const newAmount = Math.max(process.env.REACT_APP_MIN_COINS, Math.min(amount, process.env.REACT_APP_MAX_COINS));
     const userWithNewCoins = {
         ...user,
-        coins: remove ? user.coins - amount : user.coins + amount,
+        coins: remove ? user.coins - newAmount : user.coins + newAmount,
     };
     let added = false;
 
@@ -283,4 +284,117 @@ export const addCoins = async (user, amount, remove = false) => {
     });
 
     return added ? userWithNewCoins : false;
+};
+
+export const getBets = async (user = null, match = null) => {
+    let params = {};
+    user && (params = {...params, user_id: user.id});
+    match && (params = {...params, match_id: match.id});
+
+    const res = await axios.get(`${process.env.REACT_APP_DB_URL}/bets`, {
+        params : params,
+    });
+
+    return res.data;
+};
+
+export const getBet = async (user, match) => {
+    const params = {
+        user_id: user.id,
+        match_id: match.id,
+    };
+
+    const res = await axios.get(`${process.env.REACT_APP_DB_URL}/bets`, {
+        params : params,
+    });
+
+    return res.data.length ? res.data[0] : null;
+};
+
+export const addBet = async (user, match, amount, betOn) => {
+    const betExists = await getBet(user, match);
+
+    if (betExists || 'not_started' !== match.status) {
+        return false;
+    }
+
+    let bet = null;
+
+    try {
+        const newBet = {
+            user_id: user.id,
+            match_id: match.id,
+            processed: false,
+            name: match.name,
+            startAt: match.beginAt,
+            opponents: match.opponents,
+            amount: amount,
+            betOn: betOn,
+            status: null,
+        };
+
+        await axios.post(`${process.env.REACT_APP_DB_URL}/bets`, newBet, {
+            headers: {
+                header: 'Content-Type: application/json'
+            }
+        }).then((response) => {
+            bet = response.data;
+        }).catch((error) => {
+            console.error(`Error during addBet : ${error.message}`);
+        });
+    } catch (error) {
+        console.error(`Error during addBet : ${error.message}`);
+    }
+
+    bet && (await addCoins(user, amount, true));
+
+    return bet;
+};
+
+export const editBet = async (bet, user, amount, betOn) => {
+    let res = null;
+
+    if (0 === amount) {
+        return false;
+    }
+
+    try {
+        const newBet = {
+            ...bet,
+            amount: amount,
+            betOn: betOn,
+        };
+
+        await axios.put(`${process.env.REACT_APP_DB_URL}/bets/${bet.id}`, newBet, {
+            headers: {
+                header: 'Content-Type: application/json'
+            }
+        }).then((response) => {
+            res = response.data;
+        }).catch((error) => {
+            console.error(`Error during editBet : ${error.message}`);
+        });
+    } catch (error) {
+        console.error(`Error during editBet : ${error.message}`);
+    }
+
+    if (amount > res.amount) {
+        res && (await addCoins(user, amount - bet.amount, true));
+    } else if (amount < bet.amount) {
+        res && (await addCoins(user, bet.amount - amount));
+    }
+
+    return res;
+};
+
+export const removeBet = async (bet, user) => {
+    const response = await axios.delete(`${process.env.REACT_APP_DB_URL}/bets/${bet.id}`, {
+        headers: {
+            header: 'Content-Type: application/json'
+        },
+    });
+
+    200 === response.status && (await addCoins(user, bet.amount));
+
+    return 200 === response.status ? null : bet;
 };

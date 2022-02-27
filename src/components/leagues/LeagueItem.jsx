@@ -4,6 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Offcanvas from 'react-bootstrap/Offcanvas';
+import { useNavigate } from 'react-router-dom';
 
 import FavouriteButton from './FavouriteButton';
 
@@ -11,6 +12,7 @@ import cardStyles from '../../styles/LeagueCard.module.scss';
 
 const LeagueItem = ({league, user}) => {
     const [show, setShow] = useState(false);
+    const navigate = useNavigate();
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -35,7 +37,7 @@ const LeagueItem = ({league, user}) => {
                         <Col className="text-end d-flex align-items-center mt-sm-0 mt-2" sm={6} xs={12}>
                             <div className="w-100">
                                 <Button className="my-1 mx-1 w-100" variant="outline-light" disabled={0 === league.series.length} onClick={handleShow}>Voir les séries</Button>
-                                <Button className="my-1 mx-1 w-100" variant="outline-light">Voir les matchs</Button>
+                                <Button className="my-1 mx-1 w-100" variant="outline-light" onClick={() => navigate(`/leagues/matches/${league.id}/upcoming`)}>Voir les matchs</Button>
                                 <FavouriteButton user={user} league={league} />
                             </div>
                         </Col>

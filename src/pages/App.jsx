@@ -15,6 +15,7 @@ import Menu from './Menu';
 import Players from './Players';
 import NotFound from './NotFound';
 import Leagues from './Leagues';
+import LeagueMatches from './LeagueMatches';
 import Register from './Register';
 import Matches from './Matches';
 import Teams from './Teams';
@@ -22,6 +23,7 @@ import Heroes from './Heroes';
 import Items from './Items';
 
 import styles from '../styles/App.module.scss';
+import Footer from '../components/layout/Footer';
 
 export default function App() {
     const handleOnIdle = async (event) => {
@@ -129,24 +131,28 @@ export default function App() {
     }, []);
 
     return (
-        <div id="app">
-            <PacmanLoader color="cyan" loading={loading} css="position:absolute;left:45%;transform:translate(-55%, 0);z-index:100;" size={75} />
-            {loading && <div className={styles.loading} />}
+        <React.Fragment>
             <Header user={user} updateUser={updateUser} loading={loading} />
-            <Routes>
-                <Route path="/" element={<Main user={user} />} />
-                <Route path="/login" element={<Login updateUser={updateUser} />} />
-                <Route path="/register" element={<Register updateUser={updateUser} />} />
-                <Route path="/menu" element={<Menu updateUser={updateUser} />} />
-                <Route path="/players/:slug" element={<Players />} />
-                <Route path="/leagues/:slug" element={<Leagues user={user} />} />
-                <Route path="/teams/:slug" element={<Teams />} />
-                <Route path="/matches/:slug/:endpoint" element={<Matches />} />
-                <Route path="/heroes/:slug" element={<Heroes />} />
-                <Route path="/items/:slug" element={<Items />} />
-                <Route path="*" element={<NotFound />} />
-            </Routes>
-            <ScrollToTop smooth />
-        </div>
+            <div id="app">
+                <PacmanLoader color="cyan" loading={loading} css="position:absolute;left:45%;transform:translate(-55%, 0);z-index:100;" size={75} />
+                {loading && <div className={styles.loading} />}
+                <Routes>
+                    <Route path="/" element={<Main user={user} />} />
+                    <Route path="/login" element={<Login updateUser={updateUser} />} />
+                    <Route path="/register" element={<Register updateUser={updateUser} />} />
+                    <Route path="/menu" element={<Menu user={user} updateUser={updateUser} />} />
+                    <Route path="/players/:slug" element={<Players />} />
+                    <Route path="/leagues/:slug" element={<Leagues user={user} />} />
+                    <Route path="/teams/:slug" element={<Teams />} />
+                    <Route path="/matches/:slug/:endpoint" element={<Matches user={user} updateUser={updateUser} />} />
+                    <Route path="/leagues/matches/:league/:endpoint" element={<LeagueMatches user={user} updateUser={updateUser} />} />
+                    <Route path="/heroes/:slug" element={<Heroes />} />
+                    <Route path="/items/:slug" element={<Items />} />
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+                <ScrollToTop smooth />
+            </div>
+            <Footer />
+        </React.Fragment>
     );
 }

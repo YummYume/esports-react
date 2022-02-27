@@ -4,6 +4,8 @@ import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useWindowWidth } from '@react-hook/window-size';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 import { isValidGame, getGameNameBySlug, getGameMatches } from '../api/pandaScore';
 import MatchSkeleton from '../components/matches/skeleton/MatchSkeleton';
@@ -12,7 +14,7 @@ import Pagination from '../components/common/Pagination';
 
 import styles from '../styles/App.module.scss';
 
-export default function Matches() {
+export default function Matches({user, updateUser}) {
     const [loading, setLoading] = useState(true);
     const [matches, setMatches] = useState([]);
     const [page, setPage] = useState(null);
@@ -22,6 +24,9 @@ export default function Matches() {
     const [params] = useSearchParams();
     const width = useWindowWidth();
     const navigate = useNavigate();
+    const [form, setForm] = useState({
+        search: '',
+    });
 
     useEffect(() => {
         updatePage();
@@ -55,7 +60,7 @@ export default function Matches() {
     const updateMatches = () => {
         false === loading && (setLoading(true));
 
-        getGameMatches(endpoint, slug, page, perPage).then((data) => {
+        getGameMatches(endpoint, slug, page, perPage, form.search).then((data) => {
             try {
                 setMatches(data ? data.data ?? [] : []);
                 setMaxResults(parseInt(data.headers['x-total']));
@@ -67,6 +72,20 @@ export default function Matches() {
             console.error(`Error during updateMatches (Matches) : ${error}`);
         }).finally(() => {
             setLoading(false);
+        });
+    };
+
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        updateMatches();
+    };
+
+    const handleUserInput = (field, value) => {
+        setForm((form) => {
+            return {
+                ...form,
+                [field]: value
+            }
         });
     };
 
@@ -83,10 +102,32 @@ export default function Matches() {
                         <Button variant="outline-light" className={'past' === endpoint ? 'active' : ''} onClick={() => navigate(`/matches/${slug}/past`)}>Passés</Button>
                     </ButtonGroup>
                 </Col>
-                <Col xxl={11} xl={11} lg={11} md={11} sm={12} xs={10}>
+                <Col className="mt-5" xs={12}>
+                    <Row className={`justify-content-center my-2`}>
+                        <Col xxl={4} lg={6} md={7} sm={8} xs={12}>
+                            <Form noValidate onSubmit={onSubmit}>
+                                <Form.Group className="mb-4" controlId="search">
+                                    <InputGroup>
+                                        <Form.Control
+                                            type="text"
+                                            value={form.search}
+                                            placeholder="Rechercher"
+                                            onInput={(e) => handleUserInput('search', e.target.value)}
+                                            disabled={loading}
+                                        />
+                                        <Button type="submit" variant="outline-light">Rechercher</Button>
+                                    </InputGroup>
+                                </Form.Group>
+                            </Form>
+                        </Col>
+                    </Row>
+                </Col>
+                <Col xxl={11} xl={11} lg={11} md={11} sm={12} xs={12}>
                     <Row className="justify-content-around my-2">
                         {loading && [...Array(20).keys()].map(skeleton => (<MatchSkeleton key={skeleton} />))}
-                        {!loading && matches.map(match => match.opponents.length > 1 && (<MatchItem key={match.id} match={match} endpoint={endpoint} />))}
+                        {!loading && matches.map(match => match.opponents.length > 1 && (
+                            <MatchItem key={match.id} match={match} endpoint={endpoint} user={user} updateUser={updateUser} />
+                        ))}
                         {!loading && matches.length < 1 && (
                             <div className="text-center">
                                 <h2>Aucun match trouvé. :(</h2>

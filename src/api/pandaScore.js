@@ -75,10 +75,11 @@ export const getGameUrlBySlug = (gameSlug) => {
     return game ? game.url : '';
 };
 
-export const getGameLeagues = async (game = null, page = null, perPage = null) => {
+export const getGameLeagues = async (game = null, page = null, perPage = null, search = null) => {
     const params = {
         page: page ?? 1,
-        per_page: perPage ?? 50
+        per_page: perPage ?? 50,
+        'search[name]': search ?? '',
     };
     const queryString = isValidGame(game) ? `${game}/leagues` : 'leagues';
     let leagues = null;
@@ -92,10 +93,11 @@ export const getGameLeagues = async (game = null, page = null, perPage = null) =
     return leagues;
 }
 
-export const getGamePlayers = async (game = null, page = null, perPage = null) => {
+export const getGamePlayers = async (game = null, page = null, perPage = null, search = null) => {
     const params = {
         page: page ?? 1,
-        per_page: perPage ?? 50
+        per_page: perPage ?? 50,
+        'search[name]': search ?? '',
     };
     const queryString = isValidGame(game) ? `${game}/players` : 'players';
     let players = null;
@@ -109,10 +111,11 @@ export const getGamePlayers = async (game = null, page = null, perPage = null) =
     return players;
 };
 
-export const getGameTeams = async (game = null, page = null, perPage = null) => {
+export const getGameTeams = async (game = null, page = null, perPage = null, search = null) => {
     const params = {
         page: page ?? 1,
-        per_page: perPage ?? 50
+        per_page: perPage ?? 50,
+        'search[name]': search ?? '',
     };
     const queryString = isValidGame(game) ? `${game}/teams` : 'teams';
     let teams = null;
@@ -126,7 +129,7 @@ export const getGameTeams = async (game = null, page = null, perPage = null) => 
     return teams;
 };
 
-export const getGameMatches = async (endPoint, game = null, page = null, perPage = null) => {
+export const getGameMatches = async (endPoint, game = null, page = null, perPage = null, search = null) => {
     const endPoints = [
         'past',
         'running',
@@ -139,7 +142,8 @@ export const getGameMatches = async (endPoint, game = null, page = null, perPage
 
     const params = {
         page: page ?? 1,
-        per_page: perPage ?? 50
+        per_page: perPage ?? 50,
+        'search[name]': search ?? '',
     };
     const queryString = isValidGame(game) ? `${game}/matches` : 'matches';
     let matches = null;
@@ -148,6 +152,36 @@ export const getGameMatches = async (endPoint, game = null, page = null, perPage
         matches = data;
     }).catch((error) => {
         console.error(`Error during getGameMatches with game ${game} and endPoint ${endPoint} : ${error.message}`);
+    });
+
+    return matches;
+};
+
+export const getLeagueMatches = async (endPoint, league = null, page = null, perPage = null, search = null) => {
+    const endPoints = [
+        'past',
+        'running',
+        'upcoming',
+    ];
+
+    if (!endPoints.includes(endPoint)) {
+        return {};
+    }
+
+    const params = {
+        page: page ?? 1,
+        per_page: perPage ?? 50,
+        'search[name]': search ?? '',
+        'filter[past]': 'past' === endPoint,
+        'filter[running]': 'running' === endPoint,
+    };
+    const queryString = `leagues/${league}/matches`;
+    let matches = null;
+
+    await pandaScoreQuery().get(`${queryString}`, { params: params }).then((data) => {
+        matches = data;
+    }).catch((error) => {
+        console.error(`Error during getLeagueMatches with league ${league} and endPoint ${endPoint} : ${error.message}`);
     });
 
     return matches;

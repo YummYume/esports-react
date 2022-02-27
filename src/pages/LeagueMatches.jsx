@@ -1,43 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Container } from 'react-bootstrap';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 import { useWindowWidth } from '@react-hook/window-size';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 
-import { isValidGame, getGameNameBySlug, getGameLeagues } from '../api/pandaScore';
-import LeagueSkeleton from '../components/leagues/skeleton/LeagueSkeleton';
-import LeagueItem from '../components/leagues/LeagueItem';
-import styles from '../styles/App.module.scss';
+import { getLeagueMatches } from '../api/pandaScore';
+import MatchSkeleton from '../components/matches/skeleton/MatchSkeleton';
+import MatchItem from '../components/matches/MatchItem';
 import Pagination from '../components/common/Pagination';
 
-export default function Leagues({user}) {
+import styles from '../styles/App.module.scss';
+
+export default function LeagueMatches({user, updateUser}) {
     const [loading, setLoading] = useState(true);
-    const [leagues, setLeagues] = useState([]);
+    const [matches, setMatches] = useState([]);
     const [page, setPage] = useState(null);
     const [perPage, setPerPage] = useState(null);
     const [maxResults, setMaxResults] = useState(null);
-    const { slug } = useParams();
+    const { league, endpoint } = useParams();
     const [params] = useSearchParams();
     const width = useWindowWidth();
+    const navigate = useNavigate();
     const [form, setForm] = useState({
         search: '',
     });
 
     useEffect(() => {
         updatePage();
-        page && (updateLeagues());
-    }, [slug, page, perPage]);
+        page && (updateMatches());
+    }, [league, endpoint, page, perPage]);
 
     useEffect(() => {
         updatePage();
     }, [params]);
 
     useEffect(() => {
-        width < 575 && perPage !== 20 && (setPerPage(20));
-        width >= 575 && width < 1000 && perPage !== 40 && (setPerPage(40));
-        width >= 1000 && perPage !== 60 && (setPerPage(60));
+        width < 1200 && perPage !== 20 && (setPerPage(20));
+        width >= 1200 && perPage !== 40 && (setPerPage(40));
     }, [width]);
 
     const updatePage = () => {
@@ -47,7 +49,7 @@ export default function Leagues({user}) {
 
                 parseInt(params.get('page')) <= lastPage ? setPage(parseInt(params.get('page'))) : setPage(lastPage);
             } catch (error) {
-                console.error(`Error during updatePage (Leagues) : ${error}`);
+                console.error(`Error during updatePage (Matches) : ${error}`);
                 setPage(1);
             }
         } else {
@@ -55,19 +57,19 @@ export default function Leagues({user}) {
         }
     };
 
-    const updateLeagues = () => {
+    const updateMatches = () => {
         false === loading && (setLoading(true));
 
-        getGameLeagues(slug, page, perPage, form.search).then((data) => {
+        getLeagueMatches(endpoint, league, page, perPage, form.search).then((data) => {
             try {
-                setLeagues(data ? data.data ?? [] : []);
+                setMatches(data ? data.data ?? [] : []);
                 setMaxResults(parseInt(data.headers['x-total']));
             } catch (error) {
-                console.error(`Error during updateLeagues (Leagues) : ${error}`);
+                console.error(`Error during updateMatches (Matches) : ${error}`);
                 setMaxResults(null);
             }
         }).catch((error) => {
-            console.error(`Error during updateLeagues (Leagues) : ${error}`);
+            console.error(`Error during updateMatches (Matches) : ${error}`);
         }).finally(() => {
             setLoading(false);
         });
@@ -75,7 +77,7 @@ export default function Leagues({user}) {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        updateLeagues();
+        updateMatches();
     };
 
     const handleUserInput = (field, value) => {
@@ -91,7 +93,14 @@ export default function Leagues({user}) {
         <Container className="align-items-center" fluid>
             <Row className={`${styles.minWdScreenTitle} justify-content-center my-2`}>
                 <Col className="text-center my-3" xs={12}>
-                    <h1>Les ligues{isValidGame(slug) && (` de ${getGameNameBySlug(slug)}`)}</h1>
+                    <h1>Les matchs{(matches && matches.length > 0) && (` de la ligue ${matches[0].league.name}`)}</h1>
+                </Col>
+                <Col xxl={4} lg={6} md={7} sm={8} xs={12}>
+                    <ButtonGroup className="w-100">
+                        <Button variant="outline-light" className={'upcoming' === endpoint ? 'active' : ''} onClick={() => navigate(`/leagues/matches/${league}/upcoming`)}>À venir</Button>
+                        <Button variant="outline-light" className={'running' === endpoint ? 'active' : ''} onClick={() => navigate(`/leagues/matches/${league}/running`)}>En cours</Button>
+                        <Button variant="outline-light" className={'past' === endpoint ? 'active' : ''} onClick={() => navigate(`/leagues/matches/${league}/past`)}>Passés</Button>
+                    </ButtonGroup>
                 </Col>
                 <Col className="mt-5" xs={12}>
                     <Row className={`justify-content-center my-2`}>
@@ -113,13 +122,15 @@ export default function Leagues({user}) {
                         </Col>
                     </Row>
                 </Col>
-                <Col xxl={11} xl={11} lg={11} md={11} sm={12} xs={10}>
+                <Col xxl={11} xl={11} lg={11} md={11} sm={12} xs={12}>
                     <Row className="justify-content-around my-2">
-                        {loading && [...Array(20).keys()].map(skeleton => (<LeagueSkeleton key={skeleton} />))}
-                        {!loading && leagues.map(league => (<LeagueItem key={league.id} league={league} user={user} />))}
-                        {!loading && leagues.length < 1 && (
+                        {loading && [...Array(20).keys()].map(skeleton => (<MatchSkeleton key={skeleton} />))}
+                        {!loading && matches.map(match => match.opponents.length > 1 && (
+                            <MatchItem key={match.id} match={match} endpoint={endpoint} user={user} updateUser={updateUser} />
+                        ))}
+                        {!loading && matches.length < 1 && (
                             <div className="text-center">
-                                <h2>Aucune ligue trouvée. :(</h2>
+                                <h2>Aucun match trouvé. :(</h2>
                             </div>
                         )}
                     </Row>

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Container } from 'react-bootstrap';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useWindowWidth } from '@react-hook/window-size';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 import { isValidGame, getGameNameBySlug, getGameTeams } from '../api/pandaScore';
 import TeamSkeleton from '../components/teams/skeleton/TeamSkeleton';
@@ -19,6 +22,9 @@ export default function Teams() {
     const { slug } = useParams();
     const [params] = useSearchParams();
     const width = useWindowWidth();
+    const [form, setForm] = useState({
+        search: '',
+    });
 
     useEffect(() => {
         updatePage();
@@ -53,7 +59,7 @@ export default function Teams() {
     const updateTeams = () => {
         false === loading && (setLoading(true));
 
-        getGameTeams(slug, page, perPage).then((data) => {
+        getGameTeams(slug, page, perPage, form.search).then((data) => {
             try {
                 setTeams(data ? data.data ?? [] : []);
                 setMaxResults(parseInt(data.headers['x-total']));
@@ -68,11 +74,45 @@ export default function Teams() {
         });
     };
 
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        updateTeams();
+    };
+
+    const handleUserInput = (field, value) => {
+        setForm((form) => {
+            return {
+                ...form,
+                [field]: value
+            }
+        });
+    };
+
     return (
         <Container className="align-items-center" fluid>
             <Row className={`${styles.minWdScreenTitle} justify-content-center my-2`}>
                 <Col className="text-center my-3" xs={12}>
                     <h1>Les équipes{isValidGame(slug) && (` de ${getGameNameBySlug(slug)}`)}</h1>
+                </Col>
+                <Col className="mt-5" xs={12}>
+                    <Row className={`justify-content-center my-2`}>
+                        <Col xxl={4} lg={6} md={7} sm={8} xs={12}>
+                            <Form noValidate onSubmit={onSubmit}>
+                                <Form.Group className="mb-4" controlId="search">
+                                    <InputGroup>
+                                        <Form.Control
+                                            type="text"
+                                            value={form.search}
+                                            placeholder="Rechercher"
+                                            onInput={(e) => handleUserInput('search', e.target.value)}
+                                            disabled={loading}
+                                        />
+                                        <Button type="submit" variant="outline-light">Rechercher</Button>
+                                    </InputGroup>
+                                </Form.Group>
+                            </Form>
+                        </Col>
+                    </Row>
                 </Col>
                 <Col xxl={11} xl={11} lg={11} md={11} sm={12} xs={10}>
                     <Row className="justify-content-around my-2">
