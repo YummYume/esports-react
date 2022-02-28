@@ -15,13 +15,19 @@ export default function BetButton({user, match, bet, onBet}) {
 
     const firstOpponent = bet.opponents[0].opponent;
     const secondOpponent = bet.opponents[1].opponent;
+    const startAt = new Date(bet.startAt);
 
     return (
         <Row className="mb-4">
             <Col xd={12}>
                 <h3>{bet.name}</h3>
+                {bet.startAt && (
+                    <p className="m-0">Date de début : <strong>{
+                        `${startAt.getDate()}/${startAt.getMonth()+1}/${startAt.getFullYear()} à ${startAt.getHours() < 10 ? '0' + startAt.getHours() : startAt.getHours()}h${startAt.getMinutes() < 10 ? '0' + startAt.getMinutes() : startAt.getMinutes()}`
+                    }</strong></p>
+                )}
             </Col>
-            <Col className="mb-2" xs={12}>
+            <Col className="my-2" xs={12}>
                 <Row>
                     <Col sm={5} xs={6} className="d-flex justify-content-center align-items-center">
                         <Image

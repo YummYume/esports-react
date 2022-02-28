@@ -175,6 +175,11 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                                     <BetModal user={user} match={match} matchBet={bet} show={modalShow} handleClose={handleClose} onBet={onUpdate} />
                                 </React.Fragment>
                             )}
+                            {(bet) && (
+                                <div className="text-center">
+                                    <h3 className="m-0">Vous avez parié pour <strong>{bet.betOn.name}</strong></h3>
+                                </div>
+                            )}
                             {(bet && 'past' === endpoint && 'won' === bet.status) && (
                                 <div className="text-center">
                                     <h3 className="m-0 text-success">Pari gagné (+{bet.amount * 2} jetons)</h3>
