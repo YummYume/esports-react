@@ -25,7 +25,7 @@ const TeamItem = ({team}) => (
                         </Card.Title>
                         <Card.Text as="div">
                             {team.current_videogame && (
-                                <p className="m-0">Jeux vidéo : <strong>{team.current_videogame.name}</strong></p>
+                                <p className="m-0">Jeu vidéo : <strong>{team.current_videogame.name}</strong></p>
                             )}
                             {team.location && (
                                 <p className="m-0">Pays : <ReactCountryFlag countryCode={team.location} svg /> <strong>{team.location}</strong></p>

@@ -16,21 +16,19 @@ import cardStyles from '../../styles/MatchCard.module.scss';
 const MatchItem = ({match, endpoint, user, updateUser}) => {
     const [modalShow, setModalShow] = useState(false);
     const [bet, setBet] = useState(null);
+    const [betOn, setBetOn] = useState(null);
     const [bets, setBets] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    const handleShow = () => setModalShow(true);
-    const handleClose = () => setModalShow(false);
-
-    let firstOpponent = match.opponents[0].opponent;
-    let secondOpponent = match.opponents[1].opponent;
-    firstOpponent = {...firstOpponent, ...match.results.find(team => team.team_id === firstOpponent.id)};
-    secondOpponent = {...secondOpponent, ...match.results.find(team => team.team_id === secondOpponent.id)};
-
+    const firstOpponent = {...match.opponents[0].opponent, ...match.results.find(team => team.team_id === match.opponents[0].opponent.id)};
+    const secondOpponent = {...match.opponents[1].opponent, ...match.results.find(team => team.team_id === match.opponents[1].opponent.id)};
     const opponents = [firstOpponent, secondOpponent];
+    const now = new Date();
     const begin_at = match.begin_at ? new Date(match.begin_at) : null;
     const end_at = match.end_at ? new Date(match.end_at) : null;
     const winner = opponents.find(opponent => opponent.id === match.winner_id) ?? null;
+
+    const handleShow = () => setModalShow(true);
+    const handleClose = () => setModalShow(false);
 
     const updateBets = async () => {
         setLoading(true);
@@ -53,6 +51,10 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
     useEffect(() => {
         updateBets();
     }, []);
+
+    useEffect(() => {
+        bet && (setBetOn(match.opponents.find(team => team.opponent.id === bet.betOn)));
+    }, [bet]);
 
     return (
         <Col className="my-3" xl={6} xs={12}>
@@ -85,7 +87,7 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                                 )}
                                 {match.end_at && (
                                     <p className="m-0">Date de fin : <strong>{
-                                        `${end_at.getDate()}/${end_at.getMonth()+1}/${end_at.getFullYear()}`
+                                        `${end_at.getDate()}/${end_at.getMonth()+1}/${end_at.getFullYear()} à ${end_at.getHours() < 10 ? '0' + end_at.getHours() : end_at.getHours()}h${end_at.getMinutes() < 10 ? '0' + end_at.getMinutes() : end_at.getMinutes()}`
                                     }</strong></p>
                                 )}
                                 <p className="m-0">Status : <strong>{
@@ -93,6 +95,9 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                                 }</strong></p>
                                 {match.league && (
                                     <p className="m-0">Ligue : <strong><Link to={`/leagues/matches/${match.league.id}/${endpoint}`}>{match.league.name}</Link></strong></p>
+                                )}
+                                {match.videogame && (
+                                    <p className="m-0">Jeu vidéo : <strong>{match.videogame.name}</strong></p>
                                 )}
                                 {'running' === endpoint && (
                                     <React.Fragment>
@@ -127,7 +132,7 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                                         className={cardStyles.imgHeight}
                                     />
                                 </Col>
-                                <Col sm={7} xs={6}>
+                                <Col className="text-start" sm={7} xs={6}>
                                     <Card.Title className={
                                         `mt-2${winner && (winner.id === firstOpponent.id) ? ' text-success' : ''}${winner && (winner.id !== firstOpponent.id) ? ' text-danger' : ''}`
                                     }>
@@ -166,29 +171,41 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col sm={6} xs={12}>
-                            {'upcoming' === endpoint && (
-                                <React.Fragment>
-                                    <Button className="my-1 w-100" variant={bet ? 'outline-warning' : 'outline-light'} onClick={handleShow} disabled={loading}>
-                                        {bet ? 'Modifier le pari' : 'Parier'}
-                                    </Button>
-                                    <BetModal user={user} match={match} matchBet={bet} show={modalShow} handleClose={handleClose} onBet={onUpdate} />
-                                </React.Fragment>
-                            )}
-                            {(bet) && (
+                        <Col xs={12}>
+                            {(bet && betOn) && (
                                 <div className="text-center">
-                                    <h3 className="m-0">Vous avez parié pour <strong>{bet.betOn.name}</strong></h3>
+                                    <h3 className="my-1">Vous avez parié pour <strong>{betOn.opponent.name}</strong></h3>
                                 </div>
                             )}
                             {(bet && 'past' === endpoint && 'won' === bet.status) && (
                                 <div className="text-center">
-                                    <h3 className="m-0 text-success">Pari gagné (+{bet.amount * 2} jetons)</h3>
+                                    <h3 className="my-1 text-success">Pari gagné (+{bet.amount} jetons)</h3>
                                 </div>
                             )}
                             {(bet && 'past' === endpoint && 'lost' === bet.status) && (
                                 <div className="text-center">
-                                    <h3 className="m-0 text-danger">Pari perdu (-{bet.amount} jetons)</h3>
+                                    <h3 className="my-1 text-danger">Pari perdu (-{bet.amount} jetons)</h3>
                                 </div>
+                            )}
+                            {(bet && 'past' === endpoint && 'draw' === bet.status) && (
+                                <div className="text-center">
+                                    <h3 className="my-1 text-muted">Match nul ({bet.amount} jetons remboursés)</h3>
+                                </div>
+                            )}
+                            {(bet && 'past' === endpoint && 'canceled' === bet.status) && (
+                                <div className="text-center">
+                                    <h3 className="my-1 text-muted">Match annulé ({bet.amount} jetons remboursés)</h3>
+                                </div>
+                            )}
+                        </Col>
+                        <Col sm={6} xs={12}>
+                            {('upcoming' === endpoint && now < begin_at) && (
+                                <React.Fragment>
+                                    <Button className="my-2 w-100" variant={bet ? 'outline-warning' : 'outline-light'} onClick={handleShow} disabled={loading}>
+                                        {bet ? 'Modifier le pari' : 'Parier'}
+                                    </Button>
+                                    <BetModal user={user} match={match} matchBet={bet} show={modalShow} handleClose={handleClose} onBet={onUpdate} />
+                                </React.Fragment>
                             )}
                         </Col>
                     </Row>

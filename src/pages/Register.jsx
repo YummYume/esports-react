@@ -93,7 +93,7 @@ export default function Register({updateUser}) {
                     icon: 'success',
                     title: <p className="text-success">Inscription réussite</p>,
                     text: `Bienvenue, ${newUser.username}! Votre inscription est terminée, vous pouvez dès maintenant vous connecter.`,
-                    footer: <div className="text-muted">Vous avez obtenez 100 jetons gratuitement, disponibles dès votre première connexion.</div>,
+                    footer: <div className="text-muted">Vous avez obtenu 100 jetons gratuitement, disponibles dès votre première connexion.</div>,
                     confirmButtonText: 'Se connecter',
                     customClass: {
                         confirmButton: 'btn btn-success',

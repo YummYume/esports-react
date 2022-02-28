@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Spinner from 'react-bootstrap/Spinner';
 
 import { getBets } from '../../api/user';
-import BetButton from './BetButton';
+import UserBetItem from './UserBetItem';
 
 export default function UserBets({user, show, handleClose, updateUser}) {
     const [loading, setLoading] = useState(true);
@@ -44,7 +44,9 @@ export default function UserBets({user, show, handleClose, updateUser}) {
                 <Row>
                     <Col xs={12} className="text-center">
                         {!loading && (
-                            bets.map(bet => <BetButton user={user} match={{opponents: bet.opponents}} bet={bet} onBet={onBet} key={bet.user_id + bet.match_id} />).reduce((accu, elem, index) => {
+                            bets.map(
+                                bet => <UserBetItem user={user} match={{opponents: bet.opponents}} bet={bet} onBet={onBet} key={bet.user_id + bet.match_id} />
+                            ).reduce((accu, elem, index) => {
                                 return accu === null ? [elem] : [...accu, <hr key={index} />, elem]
                             }, null)
                         )}

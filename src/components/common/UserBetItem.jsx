@@ -8,23 +8,38 @@ import Col from 'react-bootstrap/Col';
 
 import BetModal from './BetModal';
 
-import styles from '../../styles/BetButton.module.scss';
+import styles from '../../styles/UserBetItem.module.scss';
 
-export default function BetButton({user, match, bet, onBet}) {
+export default function UserBetItem({user, match, bet, onBet}) {
     const [show, setShow] = useState(false);
 
-    const firstOpponent = bet.opponents[0].opponent;
-    const secondOpponent = bet.opponents[1].opponent;
+    let firstOpponent = {...bet.opponents[0].opponent};
+    bet.results && (firstOpponent = {...firstOpponent, ...bet.results.find(team => team.team_id === firstOpponent.id)});
+    let secondOpponent = {...bet.opponents[1].opponent};
+    bet.results && (secondOpponent = {...secondOpponent, ...bet.results.find(team => team.team_id === secondOpponent.id)});
+    const opponents = [firstOpponent, secondOpponent];
+    const betOn = match.opponents.find(team => team.opponent.id === bet.betOn);
+    const now = new Date();
     const startAt = new Date(bet.startAt);
+    const endAt = new Date(bet.endAt);
+    const winner = 'won' === bet.status ? opponents.find(opponent => opponent.id === bet.betOn) : 'lost' === bet.status ? opponents.find(opponent => opponent.id !== bet.betOn) : null;
 
     return (
         <Row className="mb-4">
-            <Col xd={12}>
+            <Col className="mb-1" xd={12}>
                 <h3>{bet.name}</h3>
                 {bet.startAt && (
                     <p className="m-0">Date de début : <strong>{
                         `${startAt.getDate()}/${startAt.getMonth()+1}/${startAt.getFullYear()} à ${startAt.getHours() < 10 ? '0' + startAt.getHours() : startAt.getHours()}h${startAt.getMinutes() < 10 ? '0' + startAt.getMinutes() : startAt.getMinutes()}`
                     }</strong></p>
+                )}
+                {bet.endAt && (
+                    <p className="m-0">Date de fin : <strong>{
+                        `${endAt.getDate()}/${endAt.getMonth()+1}/${endAt.getFullYear()} à ${endAt.getHours() < 10 ? '0' + endAt.getHours() : endAt.getHours()}h${endAt.getMinutes() < 10 ? '0' + endAt.getMinutes() : endAt.getMinutes()}`
+                    }</strong></p>
+                )}
+                {bet.videogame && (
+                    <p className="m-0">Jeu vidéo : <strong>{bet.videogame.name}</strong></p>
                 )}
             </Col>
             <Col className="my-2" xs={12}>
@@ -36,8 +51,10 @@ export default function BetButton({user, match, bet, onBet}) {
                             className={styles.imgHeight}
                         />
                     </Col>
-                    <Col sm={7} xs={6}>
-                        <Card.Title className="mt-2">
+                    <Col className="text-start" sm={7} xs={6}>
+                        <Card.Title className={
+                            `mt-2${winner && (winner.id === firstOpponent.id) ? ' text-success' : ''}${winner && (winner.id !== firstOpponent.id) ? ' text-danger' : ''}`
+                        }>
                             {firstOpponent.name}
                         </Card.Title>
                         <Card.Text as="div">
@@ -52,7 +69,9 @@ export default function BetButton({user, match, bet, onBet}) {
             <Col className="mb-2" xs={12}>
                 <Row>
                     <Col className="text-end" sm={7} xs={6}>
-                        <Card.Title className="mt-2">
+                        <Card.Title className={
+                            `mt-2${winner && (winner.id === secondOpponent.id) ? ' text-success' : ''}${winner && (winner.id !== secondOpponent.id) ? ' text-danger' : ''}`
+                        }>
                             {secondOpponent.name}
                         </Card.Title>
                         <Card.Text as="div">
@@ -72,9 +91,34 @@ export default function BetButton({user, match, bet, onBet}) {
                 </Row>
             </Col>
             <Col xs={12}>
-                {!bet.status && (
+                {(bet && betOn) && (
+                    <div className="text-center">
+                        <h3 className="my-1">Vous avez parié pour <strong>{betOn.opponent.name}</strong></h3>
+                    </div>
+                )}
+                {'won' === bet.status && (
+                    <div className="text-center">
+                        <h3 className="my-1 text-success">Pari gagné (+{bet.amount} jetons)</h3>
+                    </div>
+                )}
+                {'lost' === bet.status && (
+                    <div className="text-center">
+                        <h3 className="my-1 text-danger">Pari perdu (-{bet.amount} jetons)</h3>
+                    </div>
+                )}
+                {('draw' === bet.status) && (
+                    <div className="text-center">
+                        <h3 className="my-1 text-muted">Match nul ({bet.amount} jetons remboursés)</h3>
+                    </div>
+                )}
+                {('canceled' === bet.status) && (
+                    <div className="text-center">
+                        <h3 className="my-1 text-muted">Match annulé ({bet.amount} jetons remboursés)</h3>
+                    </div>
+                )}
+                {(!bet.status && now < startAt) && (
                     <React.Fragment>
-                        <Button className="my-1 w-100" variant="outline-warning" onClick={() => setShow(true)}>
+                        <Button className="my-2 w-100" variant="outline-warning" onClick={() => setShow(true)}>
                             Modifier le pari
                         </Button>
                         <BetModal
@@ -86,26 +130,6 @@ export default function BetButton({user, match, bet, onBet}) {
                             onBet={onBet}
                         />
                     </React.Fragment>
-                )}
-                {'won' === bet.status && (
-                    <div className="text-center">
-                        <h3 className="m-0 text-success">Pari gagné (+{bet.amount * 2} jetons)</h3>
-                    </div>
-                )}
-                {'lost' === bet.status && (
-                    <div className="text-center">
-                        <h3 className="m-0 text-danger">Pari perdu (-{bet.amount} jetons)</h3>
-                    </div>
-                )}
-                {('draw' === bet.status) && (
-                    <div className="text-center">
-                        <h3 className="m-0 text-muted">Match nul</h3>
-                    </div>
-                )}
-                {('canceled' === bet.status) && (
-                    <div className="text-center">
-                        <h3 className="m-0 text-muted">Match annulé</h3>
-                    </div>
                 )}
             </Col>
         </Row>

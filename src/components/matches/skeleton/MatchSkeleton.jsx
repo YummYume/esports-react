@@ -25,7 +25,7 @@ const MatchSkeleton = () => (
                             <Col sm={5} xs={6} className="d-flex justify-content-center align-items-center">
                                 <Skeleton baseColor="#6c757d" highlightColor="#97999b" count={1} height={150} containerClassName="w-100" />
                             </Col>
-                            <Col sm={7} xs={6}>
+                            <Col className="text-start" sm={7} xs={6}>
                                 <Card.Title className="mt-2">
                                     <Skeleton baseColor="#6c757d" highlightColor="#97999b" count={1} />
                                 </Card.Title>

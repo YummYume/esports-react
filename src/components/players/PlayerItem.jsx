@@ -49,7 +49,7 @@ const PlayerItem = ({player}) => {
                     <Card.Body>
                         <Card.Title>{`${player.name ?? ''}${player.last_name ? ' ' + player.last_name : ''}`}</Card.Title>
                         {player.current_videogame && (
-                            <p className="m-0">Jeux vidéo : <strong>{player.current_videogame.name}</strong></p>
+                            <p className="m-0">Jeu vidéo : <strong>{player.current_videogame.name}</strong></p>
                         )}
                         {player.current_team && (
                             <p className="m-0">Team :

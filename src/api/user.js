@@ -288,7 +288,10 @@ export const addCoins = async (user, amount, remove = false) => {
 };
 
 export const getBets = async (user = null, match = null) => {
-    let params = {};
+    let params = {
+        _sort: 'id',
+        _order: 'desc',
+    };
     user && (params = {...params, user_id: user.id});
     match && (params = {...params, match_id: match.id});
 
@@ -333,6 +336,8 @@ export const addBet = async (user, match, amount, betOn) => {
             betOn: betOn,
             status: null,
             startAt: match.begin_at,
+            endAt: match.end_at,
+            videogame: match.videogame,
         };
 
         await axios.post(`${process.env.REACT_APP_DB_URL}/bets`, newBet, {
@@ -408,6 +413,7 @@ export const processBets = async (user) => {
 
     await Promise.all(bets.map(async (bet) => {
         const matchDate = new Date(bet.startAt);
+
         if (!bet.processed && matchDate < now) {
             const betMatch = await getMatch(bet.match_id);
             const match = betMatch.data;
@@ -419,12 +425,20 @@ export const processBets = async (user) => {
                     await addCoins(user, bet.amount * 2);
                     processedBet = {
                         ...bet,
+                        opponents: match.opponents,
+                        results: match.results,
+                        startAt: match.begin_at,
+                        endAt: match.end_at,
                         processed: true,
                         status: 'won',
                     };
                 } else if (!match.draw && match.winner_id) {
                     processedBet = {
                         ...bet,
+                        opponents: match.opponents,
+                        results: match.results,
+                        startAt: match.begin_at,
+                        endAt: match.end_at,
                         processed: true,
                         status: 'lost',
                     };
@@ -432,6 +446,10 @@ export const processBets = async (user) => {
                     await addCoins(user, bet.amount);
                     processedBet = {
                         ...bet,
+                        opponents: match.opponents,
+                        results: match.results,
+                        startAt: match.begin_at,
+                        endAt: match.end_at,
                         processed: true,
                         status: 'draw',
                     };
@@ -440,6 +458,10 @@ export const processBets = async (user) => {
                 await addCoins(user, bet.amount);
                 processedBet = {
                     ...bet,
+                    opponents: match.opponents,
+                    results: match.results,
+                    startAt: match.begin_at,
+                    endAt: match.end_at,
                     processed: true,
                     status: 'canceled',
                 };
@@ -460,7 +482,7 @@ export const processBets = async (user) => {
             if (res) {
                 results.push({
                     name: bet.name,
-                    amount: 'won' === processedBet.status ? bet.amount : 'lost' === processedBet.status ? bet.amount * -1 : 0,
+                    amount: 'lost' === processedBet.status ? bet.amount * -1 : bet.amount,
                     status: processedBet.status,
                 });
             }

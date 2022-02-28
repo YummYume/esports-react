@@ -29,7 +29,7 @@ const LeagueItem = ({league, user}) => {
                             </Card.Title>
                             <Card.Text as="div">
                                 {league.videogame && (
-                                    <p className="m-0">Jeux vidéo : <strong>{league.videogame.name}</strong></p>
+                                    <p className="m-0">Jeu vidéo : <strong>{league.videogame.name}</strong></p>
                                 )}
                                 <p className="m-0">Séries : <strong>{league.series.length}</strong></p>
                             </Card.Text>

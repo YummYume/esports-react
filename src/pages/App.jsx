@@ -136,7 +136,7 @@ export default function App() {
                     const html = <div>
                         {results.map((betResult, index) => (
                             <p className="mt-0" key={index}><span className="text-dark">{betResult.name}</span> : <span className={`text-${'won' === betResult.status ? 'success' : 'lost' === betResult.status ? 'danger' : 'muted'}`}>{
-                                'won' === betResult.status ? `Gagné (+${betResult.amount * 2})`
+                                'won' === betResult.status ? `Gagné (+${betResult.amount})`
                                 : 'lost' === betResult.status ? `Perdu (-${betResult.amount})`
                                 : 'draw' === betResult.status ? `Match nul (${betResult.amount} jetons remboursés)`
                                 : 'canceled' === betResult.status ? `Match annulé (${betResult.amount} jetons remboursés)`
