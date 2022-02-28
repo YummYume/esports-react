@@ -34,6 +34,7 @@ export default function Matches({user, updateUser}) {
     }, [slug, endpoint, page, perPage]);
 
     useEffect(() => {
+        updateUser();
         updatePage();
     }, [params]);
 

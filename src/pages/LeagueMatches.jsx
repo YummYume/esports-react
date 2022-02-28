@@ -34,6 +34,7 @@ export default function LeagueMatches({user, updateUser}) {
     }, [league, endpoint, page, perPage]);
 
     useEffect(() => {
+        updateUser();
         updatePage();
     }, [params]);
 

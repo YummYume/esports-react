@@ -31,6 +31,22 @@ export const getAllAvailableGames = () => {
             name: 'Rainbow 6 Siege',
             slug: 'r6siege',
         },
+        {
+            name: 'Valorant',
+            slug: 'valorant',
+        },
+        {
+            name: 'Rocket League',
+            slug: 'rl',
+        },
+        {
+            name: 'Fifa',
+            slug: 'fifa',
+        },
+        {
+            name: 'LoL Wild Rift',
+            slug: 'lol-wild-rift',
+        }
     ];
 };
 
@@ -165,17 +181,15 @@ export const getLeagueMatches = async (endPoint, league = null, page = null, per
     ];
 
     if (!endPoints.includes(endPoint)) {
-        return {};
+        return [];
     }
 
     const params = {
         page: page ?? 1,
         per_page: perPage ?? 50,
         'search[name]': search ?? '',
-        'filter[past]': 'past' === endPoint,
-        'filter[running]': 'running' === endPoint,
     };
-    const queryString = `leagues/${league}/matches`;
+    const queryString = `leagues/${league}/matches/${endPoint}`;
     let matches = null;
 
     await pandaScoreQuery().get(`${queryString}`, { params: params }).then((data) => {
@@ -189,7 +203,7 @@ export const getLeagueMatches = async (endPoint, league = null, page = null, per
 
 export const getGameHeroes = async (game = null, page = null, perPage = null) => {
     if (!isValidGame(game, true)) {
-        return {};
+        return [];
     }
 
     const params = {
@@ -223,4 +237,16 @@ export const getGameItems = async (game = null, page = null, perPage = null) => 
     });
 
     return items;
+};
+
+export const getMatch = async (matchId) => {
+    let match = null;
+
+    await pandaScoreQuery().get(`matches/${matchId}`).then((data) => {
+        match = data;
+    }).catch((error) => {
+        console.error(`Error during getMatch with matchId ${matchId} : ${error.message}`);
+    });
+
+    return match;
 };

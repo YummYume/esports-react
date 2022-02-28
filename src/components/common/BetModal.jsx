@@ -180,7 +180,7 @@ const BetModal = ({user, match, matchBet, show, handleClose, onBet = null}) => {
                                 <Col xs={12}>
                                     {(errors.coins && touched.coins) && (
                                         <React.Fragment>
-                                            <div className="is-invalid " />
+                                            <div className="is-invalid" />
                                             <div className="invalid-feedback">
                                                 {errors.coins}
                                             </div>

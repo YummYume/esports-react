@@ -31,7 +31,7 @@ export default function Header({user, updateUser, loading}) {
                         Wide Esport Bettings
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                    <HeaderNav user={user} disconnectUser={disconnectUser} loading={loading} />
+                    <HeaderNav user={user} disconnectUser={disconnectUser} loading={loading} updateUser={updateUser} />
                 </Container>
             </Navbar>
         </header>

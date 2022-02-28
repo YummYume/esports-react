@@ -6,13 +6,17 @@ import { useNavigate } from 'react-router-dom';
 
 import { getAllAvailableGames, getHeroesItemsAvailableGames } from '../../api/pandaScore';
 import UserFavouriteLeagues from '../common/UserFavouriteLeagues';
+import UserBets from '../common/UserBets';
 
-const HeaderNav = ({user, disconnectUser, loading}) => {
+const HeaderNav = ({user, disconnectUser, loading, updateUser}) => {
     const [showFavouriteLeagues, setShowFavouriteLeagues] = useState(false);
+    const [userBetsShow, setUserBetsShow] = useState(false);
     const navigate = useNavigate();
 
     const handleFavouriteLeaguesShow = () => setShowFavouriteLeagues(true);
     const handleFavouriteLeaguesClose = () => setShowFavouriteLeagues(false);
+    const handleUserBetsShow = () => setUserBetsShow(true);
+    const handleUserBetsClose = () => setUserBetsShow(false);
 
     if (false !== user) {
         return (
@@ -49,13 +53,14 @@ const HeaderNav = ({user, disconnectUser, loading}) => {
                     <NavDropdown title={`${user.username} (${user.coins} jeton${user.coins > 1 ? 's' : ''})`} id="userDropdown" align="end" menuVariant="dark" disabled={loading}>
                         <NavDropdown.Item onClick={() => navigate('/menu')}>Accueil</NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item>Mon compte</NavDropdown.Item>
-                        <NavDropdown.Item>Mes paris</NavDropdown.Item>
+                        <NavDropdown.Item>Ajouter des jetons</NavDropdown.Item>
+                        <NavDropdown.Item onClick={handleUserBetsShow}>Mes paris</NavDropdown.Item>
                         <NavDropdown.Item onClick={handleFavouriteLeaguesShow}>Mes ligues favorites</NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item onClick={() => disconnectUser(user)}>Déconnexion</NavDropdown.Item>
                     </NavDropdown>
                 </Nav>
+                <UserBets user={user} show={userBetsShow} handleClose={handleUserBetsClose} updateUser={updateUser} />
                 <UserFavouriteLeagues user={user} show={showFavouriteLeagues} handleClose={handleFavouriteLeaguesClose} />
             </Navbar.Collapse>
         );

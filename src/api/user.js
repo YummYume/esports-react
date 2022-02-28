@@ -1,5 +1,6 @@
 import axios from 'axios';
 import sha256 from 'crypto-js/sha256';
+import { getMatch } from './pandaScore';
 
 export const getUserOrFalse = async (username, password = null) => {
     let params = {
@@ -331,6 +332,7 @@ export const addBet = async (user, match, amount, betOn) => {
             amount: amount,
             betOn: betOn,
             status: null,
+            startAt: match.begin_at,
         };
 
         await axios.post(`${process.env.REACT_APP_DB_URL}/bets`, newBet, {
@@ -378,9 +380,9 @@ export const editBet = async (bet, user, amount, betOn) => {
         console.error(`Error during editBet : ${error.message}`);
     }
 
-    if (amount > res.amount) {
+    if (bet.amount < res.amount) {
         res && (await addCoins(user, amount - bet.amount, true));
-    } else if (amount < bet.amount) {
+    } else if (bet.amount > bet.amount) {
         res && (await addCoins(user, bet.amount - amount));
     }
 
@@ -397,4 +399,73 @@ export const removeBet = async (bet, user) => {
     200 === response.status && (await addCoins(user, bet.amount));
 
     return 200 === response.status ? null : bet;
+};
+
+export const processBets = async (user) => {
+    const bets = await getBets(user);
+    const now = new Date();
+    let results = [];
+
+    await Promise.all(bets.map(async (bet) => {
+        const matchDate = new Date(bet.startAt);
+        if (!bet.processed && matchDate < now) {
+            const betMatch = await getMatch(bet.match_id);
+            const match = betMatch.data;
+            let processedBet = null;
+            let res = null;
+
+            if ('finished' === match.status) {
+                if (match.winner_id === bet.betOn) {
+                    await addCoins(user, bet.amount * 2);
+                    processedBet = {
+                        ...bet,
+                        processed: true,
+                        status: 'won',
+                    };
+                } else if (!match.draw && match.winner_id) {
+                    processedBet = {
+                        ...bet,
+                        processed: true,
+                        status: 'lost',
+                    };
+                } else if (match.draw) {
+                    await addCoins(user, bet.amount);
+                    processedBet = {
+                        ...bet,
+                        processed: true,
+                        status: 'draw',
+                    };
+                }
+            } else if ('canceled' === match.status) {
+                await addCoins(user, bet.amount);
+                processedBet = {
+                    ...bet,
+                    processed: true,
+                    status: 'canceled',
+                };
+            }
+
+            if (processedBet) {
+                await axios.put(`${process.env.REACT_APP_DB_URL}/bets/${bet.id}`, processedBet, {
+                    headers: {
+                        header: 'Content-Type: application/json'
+                    }
+                }).then((response) => {
+                    res = response.data;
+                }).catch((error) => {
+                    console.error(`Error during editBet : ${error.message}`);
+                });
+            }
+
+            if (res) {
+                results.push({
+                    name: bet.name,
+                    amount: 'won' === processedBet.status ? bet.amount : 'lost' === processedBet.status ? bet.amount * -1 : 0,
+                    status: processedBet.status,
+                });
+            }
+        }
+    }));
+
+    return results;
 };

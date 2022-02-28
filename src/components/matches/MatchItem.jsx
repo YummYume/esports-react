@@ -6,10 +6,12 @@ import Image from 'react-bootstrap/Image';
 import ReactCountryFlag from "react-country-flag";
 import ReactPlayer from 'react-player/twitch';
 import Button from 'react-bootstrap/Button';
+import { Link } from 'react-router-dom';
 
-import cardStyles from '../../styles/MatchCard.module.scss';
 import { getBets } from '../../api/user';
 import BetModal from '../common/BetModal';
+
+import cardStyles from '../../styles/MatchCard.module.scss';
 
 const MatchItem = ({match, endpoint, user, updateUser}) => {
     const [modalShow, setModalShow] = useState(false);
@@ -61,7 +63,9 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                     !bet ? 'light'
                     : !bet.processed ? 'warning'
                     : 'won' === bet.status ? 'success'
-                    : 'danger'
+                    : 'lost' === bet.status ? 'danger'
+                    : 'draw' === bet.status || 'canceled' === bet.status ? 'muted'
+                    : 'light'
                 }
                 className={cardStyles.cardMinHeight}
             >
@@ -76,7 +80,7 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                                 <p className="m-0">Nombre de parties : <strong>{match.number_of_games}</strong></p>
                                 {match.begin_at && (
                                     <p className="m-0">Date de début : <strong>{
-                                        `${begin_at.getDate()}/${begin_at.getMonth()+1}/${begin_at.getFullYear()}`
+                                        `${begin_at.getDate()}/${begin_at.getMonth()+1}/${begin_at.getFullYear()} à ${begin_at.getHours() < 10 ? '0' + begin_at.getHours() : begin_at.getHours()}h${begin_at.getMinutes() < 10 ? '0' + begin_at.getMinutes() : begin_at.getMinutes()}`
                                     }</strong></p>
                                 )}
                                 {match.end_at && (
@@ -87,6 +91,9 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                                 <p className="m-0">Status : <strong>{
                                     'not_started' === match.status ? 'À venir' : 'running' === match.status ? 'En cours' : 'finished' === match.status ? 'Terminé' : 'Inconnu'
                                 }</strong></p>
+                                {match.league && (
+                                    <p className="m-0">Ligue : <strong><Link to={`/leagues/matches/${match.league.id}/${endpoint}`}>{match.league.name}</Link></strong></p>
+                                )}
                                 {'running' === endpoint && (
                                     <React.Fragment>
                                         {match.game_advantage && (
@@ -167,6 +174,16 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                                     </Button>
                                     <BetModal user={user} match={match} matchBet={bet} show={modalShow} handleClose={handleClose} onBet={onUpdate} />
                                 </React.Fragment>
+                            )}
+                            {(bet && 'past' === endpoint && 'won' === bet.status) && (
+                                <div className="text-center">
+                                    <h3 className="m-0 text-success">Pari gagné (+{bet.amount * 2} jetons)</h3>
+                                </div>
+                            )}
+                            {(bet && 'past' === endpoint && 'lost' === bet.status) && (
+                                <div className="text-center">
+                                    <h3 className="m-0 text-danger">Pari perdu (-{bet.amount} jetons)</h3>
+                                </div>
                             )}
                         </Col>
                     </Row>

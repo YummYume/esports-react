@@ -7,8 +7,9 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
 
-import { getUserWithToken, disconnect, findGifts, claimGift } from '../api/user';
+import { getUserWithToken, disconnect, findGifts, claimGift, processBets } from '../api/user';
 import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
 import Main from './Main';
 import Login from './Login';
 import Menu from './Menu';
@@ -23,7 +24,6 @@ import Heroes from './Heroes';
 import Items from './Items';
 
 import styles from '../styles/App.module.scss';
-import Footer from '../components/layout/Footer';
 
 export default function App() {
     const handleOnIdle = async (event) => {
@@ -79,9 +79,7 @@ export default function App() {
         }).catch((error) => {
             console.error(`Error during updateUser (App) : ${error}`);
         }).finally(() => {
-            setTimeout(() => {
-                setLoading(false);
-            }, 500);
+            setLoading(false);
         });
 
         if (newUser) {
@@ -116,8 +114,50 @@ export default function App() {
                                 },
                             }).then(() => {
                                 updateUser();
-                            })
+                            });
                         }
+                    });
+                }
+            }).catch((error) => {
+                console.error(`Error during updateUser (App) : ${error}`);
+            });
+
+            processBets(newUser).then((results) => {
+                if (results.length) {
+                    const totalCoins = results.reduce((partialSum, current) => {
+                        if ('lost' === current.status) {
+                            return partialSum - current.amount;
+                        } else if ('won' === current.status) {
+                            return partialSum + (current.amount * 2);
+                        } else {
+                            return partialSum;
+                        }
+                    }, 0);
+                    const html = <div>
+                        {results.map((betResult, index) => (
+                            <p className="mt-0" key={index}><span className="text-dark">{betResult.name}</span> : <span className={`text-${'won' === betResult.status ? 'success' : 'lost' === betResult.status ? 'danger' : 'muted'}`}>{
+                                'won' === betResult.status ? `Gagné (+${betResult.amount * 2})`
+                                : 'lost' === betResult.status ? `Perdu (-${betResult.amount})`
+                                : 'draw' === betResult.status ? `Match nul (${betResult.amount} jetons remboursés)`
+                                : 'canceled' === betResult.status ? `Match annulé (${betResult.amount} jetons remboursés)`
+                                : 'Status inconnu'
+                            }</span></p>
+                        ))}
+                        <h4 className="mt-0 mb-1"><span className="text-dark">Total :</span> <span className={`text-${totalCoins < 0 ? 'danger' : 'success'}`}>{totalCoins < 0 ? '-' : '+'}{totalCoins} jetons</span></h4>
+                    </div>;
+
+                    swal.fire({
+                        icon: 'info',
+                        title: 'Résumé de vos derniers paris',
+                        html: html,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonText: 'Ok',
+                        customClass: {
+                            title: 'text-dark',
+                        },
+                    }).then(() => {
+                        updateUser();
                     });
                 }
             }).catch((error) => {
