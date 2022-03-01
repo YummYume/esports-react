@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import { Formik, Field } from 'formik';
 import * as Yup from 'yup';
@@ -9,56 +9,46 @@ import RangeSlider from 'react-bootstrap-range-slider';
 import Row from 'react-bootstrap/Row';
 import Spinner from 'react-bootstrap/Spinner';
 import InputGroup from 'react-bootstrap/InputGroup';
-import { addBet, editBet, removeBet } from '../../api/user';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
 
-const BetModal = ({user, match, matchBet, show, handleClose, onBet = null}) => {
-    const firstOpponent = match.opponents[0].opponent;
-    const secondOpponent = match.opponents[1].opponent;
-    const maxAmount = matchBet ? matchBet.amount + user.coins : user.coins;
+import { addCoins } from '../../api/user';
+
+const AddCoinsModal = ({user, show, handleClose, updateUser}) => {
+    const minAmount = process.env.REACT_APP_MIN_COINS;
+    const maxAmount = process.env.REACT_APP_MAX_COINS;
+    const swal = withReactContent(Swal);
     const [initialValues, setInitialValues] = useState({
         coins: 0,
-        teamId: null,
     });
     const schema = Yup.object().shape({
-        coins: Yup.number().required('Vous devez saisir un montant.').min(0, 'Vous ne pouvez pas parier un nombre négatif.').max(maxAmount, `Vous ne pouvez pas parier plus de ${maxAmount} jetons.`),
-        teamId: Yup.mixed().oneOf([parseInt(firstOpponent.id), parseInt(secondOpponent.id), firstOpponent.id.toString(), secondOpponent.id.toString()], 'L\'équipe sélectionnée n\'est pas valide.'),
+        coins: Yup.number().required('Vous devez saisir un montant.').min(minAmount, `Montant minimum : ${minAmount} jetons`).max(maxAmount, `Montant maximum : ${maxAmount} jetons`),
     });
 
-    useEffect(() => {
-        if (matchBet) {
-            setInitialValues({
-                coins: matchBet.amount,
-                teamId: parseInt(matchBet.betOn),
-            });
-        }
-    }, [matchBet]);
-
     const onSubmit = async (values, actions) => {
-        if (!matchBet && 1 > values.coins) {
-            handleClose();
-        }
+        1 > values.coins && (handleClose());
 
-        if (matchBet) {
-            if (1 > values.coins) {
-                await removeBet(matchBet, user).then((res) => {
-                    onBet && (onBet());
-                }).catch((err) => {
-                    console.error(`Error during onSubmit (Register) : ${err}`);
+        addCoins(user, parseInt(values.coins)).then(res => {
+            if (res.coins > user.coins) {
+                swal.fire({
+                    icon: 'success',
+                    text: `${values.coins} jetons ajoutés.`,
+                }).then(() => {
+                    updateUser();
                 });
             } else {
-                await editBet(matchBet, user, values.coins, parseInt(values.teamId)).then((res) => {
-                    onBet && (onBet());
-                }).catch((err) => {
-                    console.error(`Error during onSubmit (Register) : ${err}`);
+                swal.fire({
+                    icon: 'error',
+                    text: `Une erreur s'est produite.`,
                 });
             }
-        } else {
-            await addBet(user, match, values.coins, parseInt(values.teamId)).then((res) => {
-                onBet && (onBet());
-            }).catch((err) => {
-                console.error(`Error during onSubmit (Register) : ${err}`);
+        }).catch((error) => {
+            swal.fire({
+                icon: 'error',
+                text: `Une erreur s'est produite.`,
             });
-        }
+            console.error(`Error during onSubmit (AddCoinsModal) : ${error}`);
+        });
     };
 
     return (
@@ -73,71 +63,25 @@ const BetModal = ({user, match, matchBet, show, handleClose, onBet = null}) => {
                 handleSubmit,
                 handleChange,
                 handleBlur,
-                setFieldTouched,
                 values,
                 errors,
                 isValid,
                 isSubmitting,
                 touched,
             }) => (
-                <Form noValidate onSubmit={handleSubmit} id={`form-${match.id}`}>
+                <Form noValidate onSubmit={handleSubmit} id="add-coins-form">
                     <Modal
                         lg="md-down"
-                        aria-labelledby="match-title"
+                        aria-labelledby="modal-title"
                         centered={true}
                         show={show}
                     >
                         <Modal.Header>
-                            <Modal.Title id="match-title">
-                                Parier sur le match {match.name}
+                            <Modal.Title id="modal-title">
+                                Ajouter des jetons
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <Form.Group as={Row} className="mb-2" controlId="teamId">
-                                <Col xs={12}>
-                                    <Form.Label>Choisir une équipe</Form.Label>
-                                </Col>
-                                <Col xs={12}>
-                                    <Form.Check
-                                        inline
-                                        label={firstOpponent.name}
-                                        name="teamId"
-                                        type="radio"
-                                        id={'firstOpponent'}
-                                        value={parseInt(firstOpponent.id)}
-                                        onChange={handleChange('teamId')}
-                                        onBlur={() => setFieldTouched('teamId', true)}
-                                        isInvalid={touched.teamId && !!errors.teamId}
-                                        disabled={isSubmitting}
-                                        checked={firstOpponent.id == values.teamId}
-                                        required
-                                    />
-                                    <Form.Check
-                                        inline
-                                        label={secondOpponent.name}
-                                        name="teamId"
-                                        type="radio"
-                                        id="secondOpponent"
-                                        value={parseInt(secondOpponent.id)}
-                                        onChange={handleChange('teamId')}
-                                        onBlur={() => setFieldTouched('teamId', true)}
-                                        isInvalid={touched.teamId && !!errors.teamId}
-                                        disabled={isSubmitting}
-                                        checked={secondOpponent.id == values.teamId}
-                                        required
-                                    />
-                                </Col>
-                                <Col xs={12}>
-                                    {(errors.teamId && touched.teamId) && (
-                                        <React.Fragment>
-                                            <div className="is-invalid " />
-                                            <div className="invalid-feedback">
-                                                {errors.teamId}
-                                            </div>
-                                        </React.Fragment>
-                                    )}
-                                </Col>
-                            </Form.Group>
                             <Row>
                                 <Col xs={12}>
                                     <Form.Label>Montant (jetons)</Form.Label>
@@ -152,7 +96,7 @@ const BetModal = ({user, match, matchBet, show, handleClose, onBet = null}) => {
                                                         onChange={handleChange('coins')}
                                                         type="number"
                                                         min={0}
-                                                        max={maxAmount}
+                                                        max={parseInt(maxAmount)}
                                                         onBlur={handleBlur('coins')}
                                                         isValid={meta.touched && !meta.error}
                                                         isInvalid={meta.touched && !!meta.error}
@@ -187,6 +131,9 @@ const BetModal = ({user, match, matchBet, show, handleClose, onBet = null}) => {
                                         </React.Fragment>
                                     )}
                                 </Col>
+                                <Col xs={12}>
+                                    <p className="mt-3 mb-0">Soit {(values.coins * 0.1).toFixed(2)}€</p>
+                                </Col>
                             </Row>
                         </Modal.Body>
                         <Modal.Footer as="div">
@@ -194,13 +141,13 @@ const BetModal = ({user, match, matchBet, show, handleClose, onBet = null}) => {
                                 <Col md={8} xs={12}>
                                     <Button
                                         className="my-1 w-100"
-                                        variant={!matchBet ? 'outline-success' : matchBet && 1 > values.coins ? 'outline-danger' : 'outline-warning'}
-                                        disabled={!isValid || isSubmitting || (!matchBet && 1 > values.coins)}
+                                        variant="outline-success"
+                                        disabled={!isValid || isSubmitting || 1 > values.coins}
                                         type="submit"
                                         value="Submit"
-                                        form={`form-${match.id}`}
+                                        form="add-coins-form"
                                     >
-                                        {!matchBet ? 'Parier' : matchBet && 1 > values.coins ? 'Annuler le pari' : 'Modifier le pari'} {isSubmitting &&
+                                        Payer {isSubmitting &&
                                             <Spinner
                                                 as="span"
                                                 animation="border"
@@ -223,4 +170,4 @@ const BetModal = ({user, match, matchBet, show, handleClose, onBet = null}) => {
     );
 };
 
-export default BetModal;
+export default AddCoinsModal;

@@ -27,35 +27,37 @@ import styles from '../styles/App.module.scss';
 
 export default function App() {
     const handleOnIdle = async (event) => {
-        swal.fire({
-            icon: 'question',
-            title: <p className="text-dark">Êtes-vous vivants?</p>,
-            text: 'Ceci est une vraie question.',
-            confirmButtonText: 'Oui',
-            cancelButtonText: 'Non',
-            reverseButtons: true,
-            showCancelButton: true,
-            customClass: {
-                confirmButton: 'btn btn-success mx-2',
-                cancelButton: 'btn btn-danger mx-2',
-            },
-            buttonsStyling: false,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-        }).then((result) => {
+        if (!swal.isVisible()) {
             swal.fire({
-                icon: result.isConfirmed ? 'success' : 'error',
-                text: result.isConfirmed ? ':)' : ':(',
-            });
+                icon: 'question',
+                title: <p className="text-dark">Êtes-vous vivants?</p>,
+                text: 'Ceci est une vraie question.',
+                confirmButtonText: 'Oui',
+                cancelButtonText: 'Non',
+                reverseButtons: true,
+                showCancelButton: true,
+                customClass: {
+                    confirmButton: 'btn btn-success mx-2',
+                    cancelButton: 'btn btn-danger mx-2',
+                },
+                buttonsStyling: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+            }).then((result) => {
+                swal.fire({
+                    icon: result.isConfirmed ? 'success' : 'error',
+                    text: result.isConfirmed ? ':)' : ':(',
+                });
 
-            result.isDismissed && user && (
-                disconnect(user).then(() => {
-                    updateUser();
-                }).catch((error) => {
-                    console.error(`Error during handleOnIdle (App) : ${error}`);
-                })
-            );
-        });
+                result.isDismissed && user && (
+                    disconnect(user).then(() => {
+                        updateUser();
+                    }).catch((error) => {
+                        console.error(`Error during handleOnIdle (App) : ${error}`);
+                    })
+                );
+            });
+        }
     };
 
     const navigate = useNavigate();
@@ -136,14 +138,14 @@ export default function App() {
                     const html = <div>
                         {results.map((betResult, index) => (
                             <p className="mt-0" key={index}><span className="text-dark">{betResult.name}</span> : <span className={`text-${'won' === betResult.status ? 'success' : 'lost' === betResult.status ? 'danger' : 'muted'}`}>{
-                                'won' === betResult.status ? `Gagné (+${betResult.amount})`
+                                'won' === betResult.status ? `Gagné (+${betResult.amount * 2})`
                                 : 'lost' === betResult.status ? `Perdu (-${betResult.amount})`
                                 : 'draw' === betResult.status ? `Match nul (${betResult.amount} jetons remboursés)`
                                 : 'canceled' === betResult.status ? `Match annulé (${betResult.amount} jetons remboursés)`
                                 : 'Status inconnu'
                             }</span></p>
                         ))}
-                        <h4 className="mt-0 mb-1"><span className="text-dark">Total :</span> <span className={`text-${totalCoins < 0 ? 'danger' : 'success'}`}>{totalCoins < 0 ? '-' : '+'}{totalCoins} jetons</span></h4>
+                        <h4 className="mt-0 mb-1"><span className="text-dark">Total :</span> <span className={`text-${totalCoins < 0 ? 'danger' : 'success'}`}>{totalCoins > 0 ? '+' : ''}{totalCoins} jetons</span></h4>
                     </div>;
 
                     swal.fire({
@@ -167,7 +169,11 @@ export default function App() {
     };
 
     useEffect(() => {
-        updateUser();
+        const interval = setInterval(() => {
+            updateUser();
+        }, 60000);
+      
+        return () => clearInterval(interval);
     }, []);
 
     return (

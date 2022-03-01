@@ -82,12 +82,12 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                                 <p className="m-0">Nombre de parties : <strong>{match.number_of_games}</strong></p>
                                 {match.begin_at && (
                                     <p className="m-0">Date de début : <strong>{
-                                        `${begin_at.getDate()}/${begin_at.getMonth()+1}/${begin_at.getFullYear()} à ${begin_at.getHours() < 10 ? '0' + begin_at.getHours() : begin_at.getHours()}h${begin_at.getMinutes() < 10 ? '0' + begin_at.getMinutes() : begin_at.getMinutes()}`
+                                        `le ${begin_at.getDate()}/${begin_at.getMonth()+1}/${begin_at.getFullYear()} à ${begin_at.getHours() < 10 ? '0' + begin_at.getHours() : begin_at.getHours()}h${begin_at.getMinutes() < 10 ? '0' + begin_at.getMinutes() : begin_at.getMinutes()}`
                                     }</strong></p>
                                 )}
                                 {match.end_at && (
                                     <p className="m-0">Date de fin : <strong>{
-                                        `${end_at.getDate()}/${end_at.getMonth()+1}/${end_at.getFullYear()} à ${end_at.getHours() < 10 ? '0' + end_at.getHours() : end_at.getHours()}h${end_at.getMinutes() < 10 ? '0' + end_at.getMinutes() : end_at.getMinutes()}`
+                                        `le ${end_at.getDate()}/${end_at.getMonth()+1}/${end_at.getFullYear()} à ${end_at.getHours() < 10 ? '0' + end_at.getHours() : end_at.getHours()}h${end_at.getMinutes() < 10 ? '0' + end_at.getMinutes() : end_at.getMinutes()}`
                                     }</strong></p>
                                 )}
                                 <p className="m-0">Status : <strong>{
@@ -174,12 +174,12 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                         <Col xs={12}>
                             {(bet && betOn) && (
                                 <div className="text-center">
-                                    <h3 className="my-1">Vous avez parié pour <strong>{betOn.opponent.name}</strong></h3>
+                                    <h3 className="my-1">Vous avez parié pour <strong>{`${betOn.opponent.name} (${bet.amount} jetons)`}</strong></h3>
                                 </div>
                             )}
                             {(bet && 'past' === endpoint && 'won' === bet.status) && (
                                 <div className="text-center">
-                                    <h3 className="my-1 text-success">Pari gagné (+{bet.amount} jetons)</h3>
+                                    <h3 className="my-1 text-success">Pari gagné (+{bet.amount * 2} jetons)</h3>
                                 </div>
                             )}
                             {(bet && 'past' === endpoint && 'lost' === bet.status) && (

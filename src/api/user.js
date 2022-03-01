@@ -136,6 +136,8 @@ export const register = async (user) => {
 export const getFavouriteLeagues = async (user) => {
     const params = {
         user_id: user.id,
+        _sort: 'id',
+        _order: 'desc',
     };
 
     const res = await axios.get(`${process.env.REACT_APP_DB_URL}/favourites`, {
@@ -433,6 +435,7 @@ export const processBets = async (user) => {
                         status: 'won',
                     };
                 } else if (!match.draw && match.winner_id) {
+                    await addCoins(user, bet.amount, true);
                     processedBet = {
                         ...bet,
                         opponents: match.opponents,
@@ -482,7 +485,7 @@ export const processBets = async (user) => {
             if (res) {
                 results.push({
                     name: bet.name,
-                    amount: 'lost' === processedBet.status ? bet.amount * -1 : bet.amount,
+                    amount: bet.amount,
                     status: processedBet.status,
                 });
             }

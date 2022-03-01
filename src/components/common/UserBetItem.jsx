@@ -30,12 +30,12 @@ export default function UserBetItem({user, match, bet, onBet}) {
                 <h3>{bet.name}</h3>
                 {bet.startAt && (
                     <p className="m-0">Date de début : <strong>{
-                        `${startAt.getDate()}/${startAt.getMonth()+1}/${startAt.getFullYear()} à ${startAt.getHours() < 10 ? '0' + startAt.getHours() : startAt.getHours()}h${startAt.getMinutes() < 10 ? '0' + startAt.getMinutes() : startAt.getMinutes()}`
+                        `le ${startAt.getDate()}/${startAt.getMonth()+1}/${startAt.getFullYear()} à ${startAt.getHours() < 10 ? '0' + startAt.getHours() : startAt.getHours()}h${startAt.getMinutes() < 10 ? '0' + startAt.getMinutes() : startAt.getMinutes()}`
                     }</strong></p>
                 )}
                 {bet.endAt && (
                     <p className="m-0">Date de fin : <strong>{
-                        `${endAt.getDate()}/${endAt.getMonth()+1}/${endAt.getFullYear()} à ${endAt.getHours() < 10 ? '0' + endAt.getHours() : endAt.getHours()}h${endAt.getMinutes() < 10 ? '0' + endAt.getMinutes() : endAt.getMinutes()}`
+                        `le ${endAt.getDate()}/${endAt.getMonth()+1}/${endAt.getFullYear()} à ${endAt.getHours() < 10 ? '0' + endAt.getHours() : endAt.getHours()}h${endAt.getMinutes() < 10 ? '0' + endAt.getMinutes() : endAt.getMinutes()}`
                     }</strong></p>
                 )}
                 {bet.videogame && (
@@ -93,12 +93,12 @@ export default function UserBetItem({user, match, bet, onBet}) {
             <Col xs={12}>
                 {(bet && betOn) && (
                     <div className="text-center">
-                        <h3 className="my-1">Vous avez parié pour <strong>{betOn.opponent.name}</strong></h3>
+                        <h3 className="my-1">Vous avez parié pour <strong>{`${betOn.opponent.name} (${bet.amount} jetons)`}</strong></h3>
                     </div>
                 )}
                 {'won' === bet.status && (
                     <div className="text-center">
-                        <h3 className="my-1 text-success">Pari gagné (+{bet.amount} jetons)</h3>
+                        <h3 className="my-1 text-success">Pari gagné (+{bet.amount * 2} jetons)</h3>
                     </div>
                 )}
                 {'lost' === bet.status && (

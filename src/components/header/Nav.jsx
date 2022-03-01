@@ -5,14 +5,18 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { useNavigate } from 'react-router-dom';
 
 import { getAllAvailableGames, getHeroesItemsAvailableGames } from '../../api/pandaScore';
+import AddCoinsModal from '../common/AddCoinsModal';
 import UserFavouriteLeagues from '../common/UserFavouriteLeagues';
 import UserBets from '../common/UserBets';
 
 const HeaderNav = ({user, disconnectUser, loading, updateUser}) => {
+    const [addCoinsShow, setAddCoinsShow] = useState(false);
     const [showFavouriteLeagues, setShowFavouriteLeagues] = useState(false);
     const [userBetsShow, setUserBetsShow] = useState(false);
     const navigate = useNavigate();
 
+    const handleAddCoinsShow = () => setAddCoinsShow(true);
+    const handleAddCoinsClose = () => setAddCoinsShow(false);
     const handleFavouriteLeaguesShow = () => setShowFavouriteLeagues(true);
     const handleFavouriteLeaguesClose = () => setShowFavouriteLeagues(false);
     const handleUserBetsShow = () => setUserBetsShow(true);
@@ -53,13 +57,14 @@ const HeaderNav = ({user, disconnectUser, loading, updateUser}) => {
                     <NavDropdown title={`${user.username} (${user.coins} jeton${user.coins > 1 ? 's' : ''})`} id="userDropdown" align="end" menuVariant="dark" disabled={loading}>
                         <NavDropdown.Item onClick={() => navigate('/menu')}>Accueil</NavDropdown.Item>
                         <NavDropdown.Divider />
-                        <NavDropdown.Item>Ajouter des jetons</NavDropdown.Item>
+                        <NavDropdown.Item onClick={handleAddCoinsShow}>Ajouter des jetons</NavDropdown.Item>
                         <NavDropdown.Item onClick={handleUserBetsShow}>Mes paris</NavDropdown.Item>
                         <NavDropdown.Item onClick={handleFavouriteLeaguesShow}>Mes ligues favorites</NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item onClick={() => disconnectUser(user)}>Déconnexion</NavDropdown.Item>
                     </NavDropdown>
                 </Nav>
+                <AddCoinsModal user={user} show={addCoinsShow} handleClose={handleAddCoinsClose} updateUser={updateUser} />
                 <UserBets user={user} show={userBetsShow} handleClose={handleUserBetsClose} updateUser={updateUser} />
                 <UserFavouriteLeagues user={user} show={showFavouriteLeagues} handleClose={handleFavouriteLeaguesClose} />
             </Navbar.Collapse>
