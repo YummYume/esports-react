@@ -69,8 +69,8 @@ export default function App() {
         onIdle: handleOnIdle,
     });
 
-    const updateUser = async () => {
-        setLoading(true);
+    const updateUser = async (showLoading = true) => {
+        showLoading && (setLoading(true));
         const lastUser = user;
         let newUser = null;
 
@@ -88,6 +88,7 @@ export default function App() {
             findGifts(newUser).then((userGifts) => {
                 if (userGifts.length) {
                     let currentGift = userGifts[0];
+
                     swal.fire({
                         icon: 'info',
                         title: 'Un cadeau!',
@@ -169,11 +170,11 @@ export default function App() {
     };
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            updateUser();
+        const userRefreshInterval = setInterval(() => {
+            updateUser(false);
         }, 60000);
-      
-        return () => clearInterval(interval);
+
+        return () => clearInterval(userRefreshInterval);
     }, []);
 
     return (

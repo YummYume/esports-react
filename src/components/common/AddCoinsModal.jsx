@@ -113,7 +113,7 @@ const AddCoinsModal = ({user, show, handleClose, updateUser}) => {
                                         onChange={handleChange('coins')}
                                         variant="success"
                                         min={0}
-                                        max={maxAmount}
+                                        max={parseInt(maxAmount)}
                                         onBlur={handleBlur('coins')}
                                         tooltipPlacement="top"
                                         tooltipLabel={currentValue => `${currentValue}/${maxAmount}`}
