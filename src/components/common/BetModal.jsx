@@ -20,7 +20,7 @@ const BetModal = ({user, match, matchBet, show, handleClose, onBet = null}) => {
         teamId: null,
     });
     const schema = Yup.object().shape({
-        coins: Yup.number().required('Vous devez saisir un montant.').min(0, 'Vous ne pouvez pas parier un nombre négatif.').max(maxAmount, `Vous ne pouvez pas parier plus de ${maxAmount} jetons.`),
+        coins: Yup.number().required('Vous devez saisir un montant.').min(0, 'Vous ne pouvez pas parier un nombre négatif.').max(maxAmount, `Vous ne pouvez pas parier plus de ${maxAmount} jeton${maxAmount > 1 ? 's' : ''}.`),
         teamId: Yup.mixed().oneOf([parseInt(firstOpponent.id), parseInt(secondOpponent.id), firstOpponent.id.toString(), secondOpponent.id.toString()], 'L\'équipe sélectionnée n\'est pas valide.'),
     });
 

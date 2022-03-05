@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 import { getLeagueMatches } from '../api/pandaScore';
+import { getFullLeagueFavouriteItem } from '../api/user';
 import MatchSkeleton from '../components/matches/skeleton/MatchSkeleton';
 import MatchItem from '../components/matches/MatchItem';
 import Pagination from '../components/common/Pagination';
@@ -20,6 +21,7 @@ export default function LeagueMatches({user, updateUser}) {
     const [page, setPage] = useState(null);
     const [perPage, setPerPage] = useState(null);
     const [maxResults, setMaxResults] = useState(null);
+    const [favourite, setFavourite] = useState(null);
     const { league, endpoint } = useParams();
     const [params] = useSearchParams();
     const width = useWindowWidth();
@@ -58,13 +60,14 @@ export default function LeagueMatches({user, updateUser}) {
         }
     };
 
-    const updateMatches = () => {
+    const updateMatches = async () => {
         false === loading && (setLoading(true));
 
-        getLeagueMatches(endpoint, league, page, perPage, form.search).then((data) => {
+        getLeagueMatches(endpoint, league, page, perPage, form.search).then(async (data) => {
             try {
                 setMatches(data ? data.data ?? [] : []);
                 setMaxResults(parseInt(data.headers['x-total']));
+                setFavourite(await getFullLeagueFavouriteItem(user, league));
             } catch (error) {
                 console.error(`Error during updateMatches (Matches) : ${error}`);
                 setMaxResults(null);
@@ -94,7 +97,7 @@ export default function LeagueMatches({user, updateUser}) {
         <Container className="align-items-center" fluid>
             <Row className={`${styles.minWdScreenTitle} justify-content-center my-2`}>
                 <Col className="text-center my-3" xs={12}>
-                    <h1>Les matchs{(matches && matches.length > 0) && (` de la ligue ${matches[0].league.name}`)}</h1>
+                    <h1>Les matchs{favourite && (` de la ligue ${favourite.league_name}`)}</h1>
                 </Col>
                 <Col xxl={4} lg={6} md={7} sm={8} xs={12}>
                     <ButtonGroup className="w-100">

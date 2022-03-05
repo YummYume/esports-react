@@ -9,8 +9,9 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import { isValidGame, getGameNameBySlug, getGameLeagues } from '../api/pandaScore';
 import LeagueSkeleton from '../components/leagues/skeleton/LeagueSkeleton';
 import LeagueItem from '../components/leagues/LeagueItem';
-import styles from '../styles/App.module.scss';
 import Pagination from '../components/common/Pagination';
+
+import styles from '../styles/App.module.scss';
 
 export default function Leagues({user}) {
     const [loading, setLoading] = useState(true);

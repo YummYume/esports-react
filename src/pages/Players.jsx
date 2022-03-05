@@ -9,8 +9,9 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import { getGamePlayers, isValidGame, getGameNameBySlug } from '../api/pandaScore';
 import PlayerSkeleton from '../components/players/skeleton/PlayerSkeleton';
 import PlayerItem from '../components/players/PlayerItem';
-import styles from '../styles/App.module.scss';
 import Pagination from '../components/common/Pagination';
+
+import styles from '../styles/App.module.scss';
 
 export default function Players() {
     const [loading, setLoading] = useState(true);

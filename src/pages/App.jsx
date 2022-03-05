@@ -59,7 +59,6 @@ export default function App() {
             });
         }
     };
-
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(false);
@@ -141,12 +140,17 @@ export default function App() {
                             <p className="mt-0" key={index}><span className="text-dark">{betResult.name}</span> : <span className={`text-${'won' === betResult.status ? 'success' : 'lost' === betResult.status ? 'danger' : 'muted'}`}>{
                                 'won' === betResult.status ? `Gagné (+${betResult.amount * 2})`
                                 : 'lost' === betResult.status ? `Perdu (-${betResult.amount})`
-                                : 'draw' === betResult.status ? `Match nul (${betResult.amount} jetons remboursés)`
-                                : 'canceled' === betResult.status ? `Match annulé (${betResult.amount} jetons remboursés)`
+                                : 'draw' === betResult.status ? `Match nul (${betResult.amount} jeton${betResult.amount > 1 ? 's' : ''} remboursés)`
+                                : 'canceled' === betResult.status ? `Match annulé (${betResult.amount} jeton${betResult.amount > 1 ? 's' : ''} remboursés)`
                                 : 'Status inconnu'
                             }</span></p>
                         ))}
-                        <h4 className="mt-0 mb-1"><span className="text-dark">Total :</span> <span className={`text-${totalCoins < 0 ? 'danger' : 'success'}`}>{totalCoins > 0 ? '+' : ''}{totalCoins} jetons</span></h4>
+                        <h4 className="mt-0 mb-1">
+                            <span className="text-dark">Total :</span>
+                            <span className={`text-${totalCoins < 0 ? 'danger' : 'success'}`}>
+                                {totalCoins > 0 ? '+' : ''}{totalCoins} jeton{totalCoins > 1 || totalCoins < -1 ? 's' : ''}
+                            </span>
+                        </h4>
                     </div>;
 
                     swal.fire({
@@ -170,6 +174,7 @@ export default function App() {
     };
 
     useEffect(() => {
+        updateUser();
         const userRefreshInterval = setInterval(() => {
             updateUser(false);
         }, 60000);

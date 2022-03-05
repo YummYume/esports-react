@@ -494,3 +494,16 @@ export const processBets = async (user) => {
 
     return results;
 };
+
+export const getFullLeagueFavouriteItem = async (user, league_id) => {
+    const params = {
+        user_id: user.id,
+        league_id: league_id,
+    };
+
+    const res = await axios.get(`${process.env.REACT_APP_DB_URL}/favourites`, {
+        params : params,
+    });
+
+    return res.data.length ? res.data[0] : null;
+};

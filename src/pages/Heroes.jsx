@@ -6,8 +6,9 @@ import { useWindowWidth } from '@react-hook/window-size';
 import { getGameHeroes, isValidGame, getGameNameBySlug } from '../api/pandaScore';
 import HeroSkeleton from '../components/heroes/skeleton/HeroSkeleton';
 import HeroItem from '../components/heroes/HeroItem';
-import styles from '../styles/App.module.scss';
 import Pagination from '../components/common/Pagination';
+
+import styles from '../styles/App.module.scss';
 
 export default function Heroes() {
     const [loading, setLoading] = useState(true);

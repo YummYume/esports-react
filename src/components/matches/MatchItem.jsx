@@ -174,27 +174,27 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                         <Col xs={12}>
                             {(bet && betOn) && (
                                 <div className="text-center">
-                                    <h3 className="my-1">Vous avez parié pour <strong>{`${betOn.opponent.name} (${bet.amount} jetons)`}</strong></h3>
+                                    <h3 className="my-1">Vous avez parié pour <strong>{`${betOn.opponent.name} (${bet.amount} jeton${bet.amount > 1 ? 's' : ''})`}</strong></h3>
                                 </div>
                             )}
                             {(bet && 'past' === endpoint && 'won' === bet.status) && (
                                 <div className="text-center">
-                                    <h3 className="my-1 text-success">Pari gagné (+{bet.amount * 2} jetons)</h3>
+                                    <h3 className="my-1 text-success">Pari gagné (+{bet.amount * 2} jeton{bet.amount * 2 > 1 ? 's' : ''})</h3>
                                 </div>
                             )}
                             {(bet && 'past' === endpoint && 'lost' === bet.status) && (
                                 <div className="text-center">
-                                    <h3 className="my-1 text-danger">Pari perdu (-{bet.amount} jetons)</h3>
+                                    <h3 className="my-1 text-danger">Pari perdu (-{bet.amount} jeton{bet.amount > 1 ? 's' : ''})</h3>
                                 </div>
                             )}
                             {(bet && 'past' === endpoint && 'draw' === bet.status) && (
                                 <div className="text-center">
-                                    <h3 className="my-1 text-muted">Match nul ({bet.amount} jetons remboursés)</h3>
+                                    <h3 className="my-1 text-muted">Match nul ({bet.amount} jeton{bet.amount > 1 ? 's' : ''} remboursé${bet.amount > 1 ? 's' : ''})</h3>
                                 </div>
                             )}
                             {(bet && 'past' === endpoint && 'canceled' === bet.status) && (
                                 <div className="text-center">
-                                    <h3 className="my-1 text-muted">Match annulé ({bet.amount} jetons remboursés)</h3>
+                                    <h3 className="my-1 text-muted">Match annulé ({bet.amount} jeton{bet.amount > 1 ? 's' : ''} remboursé${bet.amount > 1 ? 's' : ''})</h3>
                                 </div>
                             )}
                         </Col>

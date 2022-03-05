@@ -8,6 +8,7 @@ import { getAllAvailableGames, getHeroesItemsAvailableGames } from '../../api/pa
 import AddCoinsModal from '../common/AddCoinsModal';
 import UserFavouriteLeagues from '../common/UserFavouriteLeagues';
 import UserBets from '../common/UserBets';
+import UserCoins from './UserCoins';
 
 const HeaderNav = ({user, disconnectUser, loading, updateUser}) => {
     const [addCoinsShow, setAddCoinsShow] = useState(false);
@@ -54,7 +55,7 @@ const HeaderNav = ({user, disconnectUser, loading, updateUser}) => {
                             <NavDropdown.Item key={game.url} onClick={() => navigate(`/items/${game.slug}`)}>Les items de {game.name}</NavDropdown.Item>
                         ))}
                     </NavDropdown>
-                    <NavDropdown title={`${user.username} (${user.coins} jeton${user.coins > 1 ? 's' : ''})`} id="userDropdown" align="end" menuVariant="dark" disabled={loading}>
+                    <NavDropdown title={<UserCoins user={user} />} id="userDropdown" align="end" menuVariant="dark" disabled={loading}>
                         <NavDropdown.Item onClick={() => navigate('/menu')}>Accueil</NavDropdown.Item>
                         <NavDropdown.Divider />
                         <NavDropdown.Item onClick={handleAddCoinsShow}>Ajouter des jetons</NavDropdown.Item>

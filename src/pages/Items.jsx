@@ -6,8 +6,9 @@ import { useWindowWidth } from '@react-hook/window-size';
 import { getGameItems, isValidGame, getGameNameBySlug } from '../api/pandaScore';
 import ItemSkeleton from '../components/items/skeleton/ItemSkeleton';
 import ItemItem from '../components/items/ItemItem';
-import styles from '../styles/App.module.scss';
 import Pagination from '../components/common/Pagination';
+
+import styles from '../styles/App.module.scss';
 
 export default function Items() {
     const [loading, setLoading] = useState(true);

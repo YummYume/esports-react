@@ -22,7 +22,7 @@ const AddCoinsModal = ({user, show, handleClose, updateUser}) => {
         coins: 0,
     });
     const schema = Yup.object().shape({
-        coins: Yup.number().required('Vous devez saisir un montant.').min(minAmount, `Montant minimum : ${minAmount} jetons`).max(maxAmount, `Montant maximum : ${maxAmount} jetons`),
+        coins: Yup.number().required('Vous devez saisir un montant.').min(minAmount, `Montant minimum : ${minAmount} jeton${minAmount > 1 ? 's' : ''}`).max(maxAmount, `Montant maximum : ${maxAmount} jeton${maxAmount > 1 ? 's' : ''}`),
     });
 
     const onSubmit = async (values, actions) => {
@@ -32,7 +32,7 @@ const AddCoinsModal = ({user, show, handleClose, updateUser}) => {
             if (res.coins > user.coins) {
                 swal.fire({
                     icon: 'success',
-                    text: `${values.coins} jetons ajoutés.`,
+                    text: `${values.coins} jeton${values.coins > 1 ? 's' : ''} ajouté${values.coins > 1 ? 's' : ''}.`,
                 }).then(() => {
                     updateUser();
                 });
