@@ -46,6 +46,10 @@ export default function LeagueMatches({user, updateUser}) {
         width >= 1200 && perPage !== 40 && (setPerPage(40));
     }, [width]);
 
+    useEffect(() => {
+        maxResults && (setPage(Math.max(1, Math.min(page, Math.ceil(maxResults / perPage)))));
+    }, [maxResults]);
+
     const updatePage = () => {
         if (params.get('page')) {
             try {
@@ -87,7 +91,10 @@ export default function LeagueMatches({user, updateUser}) {
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        updateMatches();
+        if (!loading) {
+            setPage(1);
+            updateMatches();
+        }
     };
 
     const handleUserInput = (field, value) => {
@@ -110,9 +117,30 @@ export default function LeagueMatches({user, updateUser}) {
                 </Col>
                 <Col xxl={4} lg={6} md={7} sm={8} xs={12}>
                     <ButtonGroup className="w-100">
-                        <Button variant="outline-light" className={'upcoming' === endpoint ? 'active' : ''} onClick={() => navigate(`/leagues/matches/${league}/upcoming`)}>À venir</Button>
-                        <Button variant="outline-light" className={'running' === endpoint ? 'active' : ''} onClick={() => navigate(`/leagues/matches/${league}/running`)}>En cours</Button>
-                        <Button variant="outline-light" className={'past' === endpoint ? 'active' : ''} onClick={() => navigate(`/leagues/matches/${league}/past`)}>Passés</Button>
+                        <Button
+                            variant="outline-light"
+                            disabled={loading && 'upcoming' !== endpoint}
+                            className={'upcoming' === endpoint ? 'active' : ''}
+                            onClick={() => navigate(`/leagues/matches/${league}/upcoming`)}
+                        >
+                            À venir
+                        </Button>
+                        <Button
+                            variant="outline-light"
+                            disabled={loading && 'running' !== endpoint}
+                            className={'running' === endpoint ? 'active' : ''}
+                            onClick={() => navigate(`/leagues/matches/${league}/running`)}
+                        >
+                            En cours
+                        </Button>
+                        <Button
+                            variant="outline-light"
+                            disabled={loading && 'past' !== endpoint}
+                            className={'past' === endpoint ? 'active' : ''}
+                            onClick={() => navigate(`/leagues/matches/${league}/past`)}
+                        >
+                            Passés
+                        </Button>
                     </ButtonGroup>
                 </Col>
                 <Col className="mt-5" xs={12}>
@@ -126,15 +154,21 @@ export default function LeagueMatches({user, updateUser}) {
                                             value={form.search}
                                             placeholder="Rechercher"
                                             onInput={(e) => handleUserInput('search', e.target.value)}
-                                            disabled={loading}
                                         />
-                                        <Button type="submit" variant="outline-light">Rechercher</Button>
+                                        <Button type="submit" disabled={loading} variant="outline-light">Rechercher</Button>
                                     </InputGroup>
                                 </Form.Group>
                             </Form>
                         </Col>
                     </Row>
                 </Col>
+                {(0 < page && 0 < perPage && 0 < maxResults) && (
+                    <Col className="my-4" xs={12}>
+                        <div className="d-flex align-items-center justify-content-center">
+                            <Pagination page={page} perPage={perPage} maxResults={maxResults} loading={loading} />
+                        </div>
+                    </Col>
+                )}
                 <Col xxl={11} xl={11} lg={11} md={11} sm={12} xs={12}>
                     <Row className="justify-content-around my-2">
                         {loading && [...Array(20).keys()].map(skeleton => (<MatchSkeleton key={skeleton} />))}
@@ -151,7 +185,7 @@ export default function LeagueMatches({user, updateUser}) {
                 {(0 < page && 0 < perPage && 0 < maxResults) && (
                     <Col className="my-4" xs={12}>
                         <div className="d-flex align-items-center justify-content-center">
-                            <Pagination page={page} perPage={perPage} maxResults={maxResults} />
+                            <Pagination page={page} perPage={perPage} maxResults={maxResults} loading={loading} />
                         </div>
                     </Col>
                 )}

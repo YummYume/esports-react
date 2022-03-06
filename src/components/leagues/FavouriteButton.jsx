@@ -40,6 +40,7 @@ const FavouriteButton = ({user, league, onClick = null}) => {
             setFavourite(res);
             null !== onClick && (onClick());
         }).catch((error) => {
+            setFavourite(null);
             console.error(`Error during removeFavourite (FavouriteButton) : ${error}`);
         }).finally(() => {
             setLoading(false);

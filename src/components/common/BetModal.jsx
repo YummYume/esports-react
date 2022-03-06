@@ -15,6 +15,7 @@ const BetModal = ({user, match, matchBet, show, handleClose, onBet = null}) => {
     const firstOpponent = match.opponents[0].opponent;
     const secondOpponent = match.opponents[1].opponent;
     const maxAmount = matchBet ? matchBet.amount + user.coins : user.coins;
+    const [error, setError] = useState(null);
     const [initialValues, setInitialValues] = useState({
         coins: 0,
         teamId: null,
@@ -34,6 +35,8 @@ const BetModal = ({user, match, matchBet, show, handleClose, onBet = null}) => {
     }, [matchBet]);
 
     const onSubmit = async (values, actions) => {
+        error && (setError(null));
+
         if (!matchBet && 1 > values.coins) {
             handleClose();
         }
@@ -43,12 +46,14 @@ const BetModal = ({user, match, matchBet, show, handleClose, onBet = null}) => {
                 await removeBet(matchBet, user).then((res) => {
                     onBet && (onBet());
                 }).catch((err) => {
+                    setError('Une erreur est survenue, veuillez réessayer ultérieurement.');
                     console.error(`Error during onSubmit (Register) : ${err}`);
                 });
             } else {
                 await editBet(matchBet, user, values.coins, parseInt(values.teamId)).then((res) => {
                     onBet && (onBet());
                 }).catch((err) => {
+                    setError('Une erreur est survenue, veuillez réessayer ultérieurement.');
                     console.error(`Error during onSubmit (Register) : ${err}`);
                 });
             }
@@ -56,6 +61,7 @@ const BetModal = ({user, match, matchBet, show, handleClose, onBet = null}) => {
             await addBet(user, match, values.coins, parseInt(values.teamId)).then((res) => {
                 onBet && (onBet());
             }).catch((err) => {
+                setError('Une erreur est survenue, veuillez réessayer ultérieurement.');
                 console.error(`Error during onSubmit (Register) : ${err}`);
             });
         }
@@ -191,6 +197,11 @@ const BetModal = ({user, match, matchBet, show, handleClose, onBet = null}) => {
                         </Modal.Body>
                         <Modal.Footer as="div">
                             <Row className="w-100 align-items-center justify-content-center">
+                                {error && (
+                                    <Col xs={12} className="mb-2 text-danger text-center">
+                                        {error}
+                                    </Col>
+                                )}
                                 <Col md={8} xs={12}>
                                     <Button
                                         className="my-1 w-100"

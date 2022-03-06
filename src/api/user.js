@@ -269,7 +269,14 @@ export const claimGift = async (gift, user) => {
 }
 
 export const addCoins = async (user, amount, remove = false) => {
-    const newAmount = Math.max(process.env.REACT_APP_MIN_COINS, Math.min(amount, process.env.REACT_APP_MAX_COINS));
+    let newAmount = 0;
+
+    if (user.coins > process.env.REACT_APP_MAX_COINS) {
+        remove = true;
+        newAmount = user.coins - process.env.REACT_APP_MAX_COINS;
+    } else {
+        newAmount = Math.max(process.env.REACT_APP_MIN_COINS, Math.min(amount, process.env.REACT_APP_MAX_COINS));
+    }
     const userWithNewCoins = {
         ...user,
         coins: remove ? user.coins - newAmount : user.coins + newAmount,

@@ -17,7 +17,7 @@ const MatchSkeleton = () => (
                             <Skeleton baseColor="#6c757d" highlightColor="#97999b" count={1} />
                         </Card.Title>
                         <Card.Text as="div">
-                            <Skeleton baseColor="#6c757d" highlightColor="#97999b" count={5} />
+                            <Skeleton baseColor="#6c757d" highlightColor="#97999b" count={8} />
                         </Card.Text>
                     </Col>
                     <Col sm={6} xs={12}>

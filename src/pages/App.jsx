@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { useNavigate } from 'react-router-dom';
 
-import { getUserWithToken, disconnect, findGifts, claimGift, processBets } from '../api/user';
+import { getUserWithToken, disconnect, findGifts, claimGift, processBets, addCoins } from '../api/user';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import Main from './Main';
@@ -84,6 +84,24 @@ export default function App() {
         });
 
         if (newUser) {
+            if (newUser.coins > process.env.REACT_APP_MAX_COINS) {
+                addCoins(newUser, 0).then(res => {
+                    swal.fire({
+                        icon: 'info',
+                        title: 'Remise à niveau de vos jetons',
+                        text: `Vos jetons dépassaient le nombre maximal autorisé (${process.env.REACT_APP_MAX_COINS}), ils ont donc été remis à niveau.`,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonText: 'Ok',
+                        customClass: {
+                            title: 'text-dark',
+                        },
+                    });
+                }).then(() => {
+                    updateUser();
+                });
+            }
+
             findGifts(newUser).then((userGifts) => {
                 if (userGifts.length) {
                     let currentGift = userGifts[0];

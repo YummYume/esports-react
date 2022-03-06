@@ -16,7 +16,7 @@ import { addCoins } from '../../api/user';
 
 const AddCoinsModal = ({user, show, handleClose, updateUser}) => {
     const minAmount = process.env.REACT_APP_MIN_COINS;
-    const maxAmount = process.env.REACT_APP_MAX_COINS;
+    const maxAmount = Math.max(process.env.REACT_APP_MAX_COINS - user.coins, 0);
     const swal = withReactContent(Swal);
     const [initialValues, setInitialValues] = useState({
         coins: 0,
@@ -48,6 +48,8 @@ const AddCoinsModal = ({user, show, handleClose, updateUser}) => {
                 text: `Une erreur s'est produite.`,
             });
             console.error(`Error during onSubmit (AddCoinsModal) : ${error}`);
+        }).finally(() => {
+            actions.resetForm();
         });
     };
 

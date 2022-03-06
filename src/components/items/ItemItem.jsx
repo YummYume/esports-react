@@ -11,7 +11,7 @@ const ItemItem = ({item}) => {
                 <Card.Img className={cardStyles.imgHeight} variant="top" src={item.image_url ?? 'https://c.tenor.com/788bIjpR5hkAAAAC/anime.gif'} />
                 <Card.Body>
                     <Card.Title>{item.name ?? 'Inconnu'}</Card.Title>
-                    {(item.gold_total) && (
+                    {(null !== item.gold_total && undefined !== item.gold_total && 0 < item.gold_total) && (
                         <Card.Text as="div">
                             {item.gold_total && (
                                 <p className="m-0">Prix : <strong>{item.gold_total}</strong></p>

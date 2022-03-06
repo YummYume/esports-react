@@ -36,29 +36,29 @@ hr:not(.dropdown-divider) {
 .page-item {
     &:not(.active, .disabled) {
         .page-link {
-            color: rgba(var(--bs-info-rgb), 1) !important;
-            border-color: rgba(var(--bs-info-rgb), 1) !important;
+            color: rgba(var(--bs-light-rgb), 1) !important;
+            border-color: rgba(var(--bs-light-rgb), 1) !important;
             background-color: rgba(var(--bs-dark-rgb), 1) !important;
 
             &:hover {
-                color: rgba(var(--bs-light-rgb), 1) !important;
-                background-color: rgba(var(--bs-info-rgb), 1) !important;
+                color: rgba(var(--bs-dark-rgb), 1) !important;
+                background-color: rgba(var(--bs-light-rgb), 1) !important;
             }
         }
     }
 
     &.active {
         .page-link {
-            color: rgba(var(--bs-light-rgb), 1) !important;
-            border-color: rgba(var(--bs-info-rgb), 1) !important;
-            background-color: rgba(var(--bs-info-rgb), 1) !important;
+            color: rgba(var(--bs-dark-rgb), 1) !important;
+            border-color: rgba(var(--bs-light-rgb), 1) !important;
+            background-color: rgba(var(--bs-light-rgb), 1) !important;
         }
     }
 
     &.disabled {
         .page-link {
             color: rgba($app-grey, 1) !important;
-            border-color: rgba(var(--bs-info-rgb), 1) !important;
+            border-color: rgba(var(--bs-light-rgb), 1) !important;
             background-color: rgba(var(--bs-dark-rgb), 1) !important;
         }
     }

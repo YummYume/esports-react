@@ -35,6 +35,10 @@ export default function Heroes() {
         width >= 1000 && perPage !== 60 && (setPerPage(60));
     }, [width]);
 
+    useEffect(() => {
+        maxResults && (setPage(Math.max(1, Math.min(page, Math.ceil(maxResults / perPage)))));
+    }, [maxResults]);
+
     const updatePage = () => {
         if (params.get('page')) {
             try {
@@ -73,6 +77,13 @@ export default function Heroes() {
                 <Col className="text-center my-3" xs={12}>
                     <h1>Les personnages{isValidGame(slug, true) && (` de ${getGameNameBySlug(slug)}`)}</h1>
                 </Col>
+                {(0 < page && 0 < perPage && 0 < maxResults) && (
+                    <Col className="my-4" xs={12}>
+                        <div className="d-flex align-items-center justify-content-center">
+                            <Pagination page={page} perPage={perPage} maxResults={maxResults} loading={loading} />
+                        </div>
+                    </Col>
+                )}
                 <Col xxl={11} xl={11} lg={11} md={11} sm={12} xs={10}>
                     <Row className="justify-content-around my-2">
                         {loading && [...Array(20).keys()].map(skeleton => (<HeroSkeleton key={skeleton} />))}
@@ -87,7 +98,7 @@ export default function Heroes() {
                 {(0 < page && 0 < perPage && 0 < maxResults) && (
                     <Col className="my-4" xs={12}>
                         <div className="d-flex align-items-center justify-content-center">
-                            <Pagination page={page} perPage={perPage} maxResults={maxResults} />
+                            <Pagination page={page} perPage={perPage} maxResults={maxResults} loading={loading} />
                         </div>
                     </Col>
                 )}

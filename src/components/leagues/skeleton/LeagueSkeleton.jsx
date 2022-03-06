@@ -25,6 +25,7 @@ const LeagueSkeleton = () => (
                         <div className="w-100">
                             <Skeleton baseColor="#6c757d" highlightColor="#97999b" className="my-1 mx-1 w-100" count={1} width={25} height={25} />
                             <Skeleton baseColor="#6c757d" highlightColor="#97999b" className="my-1 mx-1 w-100" count={1} width={25} height={25} />
+                            <Skeleton baseColor="#6c757d" highlightColor="#97999b" className="my-1 mx-1 w-100" count={1} width={25} height={25} />
                         </div>
                     </Col>
                 </Row>
