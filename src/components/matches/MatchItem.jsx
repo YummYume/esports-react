@@ -94,7 +94,14 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                                     'not_started' === match.status ? 'À venir' : 'running' === match.status ? 'En cours' : 'finished' === match.status ? 'Terminé' : 'Inconnu'
                                 }</strong></p>
                                 {match.league && (
-                                    <p className="m-0">Ligue : <strong><Link to={`/leagues/matches/${match.league.id}/${endpoint}`}>{match.league.name}</Link></strong></p>
+                                    <p className="m-0">Ligue : <strong>
+                                        <Link to={{
+                                            pathname: `/leagues/matches/${match.league.id}/${endpoint}`,
+                                            state: { leagueName: match.league.name },
+                                        }}>
+                                            {match.league.name}
+                                        </Link>
+                                    </strong></p>
                                 )}
                                 {match.videogame && (
                                     <p className="m-0">Jeu vidéo : <strong>{match.videogame.name}</strong></p>
@@ -125,14 +132,14 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                         </Col>
                         <Col className="mb-2" sm={6} xs={12}>
                             <Row>
-                                <Col sm={5} xs={6} className="d-flex justify-content-center align-items-center">
+                                <Col xs={6} className="d-flex justify-content-center align-items-center">
                                     <Image
                                         rounded={true}
                                         src={firstOpponent.image_url ?? 'https://c.tenor.com/_9Fx5W2D0ZkAAAAC/tiens-tiens-tiens-tiens.gif'}
                                         className={cardStyles.imgHeight}
                                     />
                                 </Col>
-                                <Col className="text-start" sm={7} xs={6}>
+                                <Col className="text-start" xs={6}>
                                     <Card.Title className={
                                         `mt-2${winner && (winner.id === firstOpponent.id) ? ' text-success' : ''}${winner && (winner.id !== firstOpponent.id) ? ' text-danger' : ''}`
                                     }>
@@ -149,7 +156,7 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                         </Col>
                         <Col className="mb-2" sm={6} xs={12}>
                             <Row>
-                                <Col className="text-end" sm={7} xs={6}>
+                                <Col className="text-end" xs={6}>
                                     <Card.Title className={
                                         `mt-2${winner && (winner.id === secondOpponent.id) ? ' text-success' : ''}${winner && (winner.id !== secondOpponent.id) ? ' text-danger' : ''}`
                                     }>
@@ -162,7 +169,7 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                                         )}
                                     </Card.Text>
                                 </Col>
-                                <Col sm={5} xs={6} className="d-flex justify-content-center align-items-center">
+                                <Col xs={6} className="d-flex justify-content-center align-items-center">
                                     <Image
                                         rounded={true}
                                         src={secondOpponent.image_url ?? 'https://c.tenor.com/_9Fx5W2D0ZkAAAAC/tiens-tiens-tiens-tiens.gif'}
@@ -189,12 +196,12 @@ const MatchItem = ({match, endpoint, user, updateUser}) => {
                             )}
                             {(bet && 'past' === endpoint && 'draw' === bet.status) && (
                                 <div className="text-center">
-                                    <h3 className="my-1 text-muted">Match nul ({bet.amount} jeton{bet.amount > 1 ? 's' : ''} remboursé${bet.amount > 1 ? 's' : ''})</h3>
+                                    <h3 className="my-1 text-muted">Match nul ({bet.amount} jeton{bet.amount > 1 ? 's' : ''} remboursé{bet.amount > 1 ? 's' : ''})</h3>
                                 </div>
                             )}
                             {(bet && 'past' === endpoint && 'canceled' === bet.status) && (
                                 <div className="text-center">
-                                    <h3 className="my-1 text-muted">Match annulé ({bet.amount} jeton{bet.amount > 1 ? 's' : ''} remboursé${bet.amount > 1 ? 's' : ''})</h3>
+                                    <h3 className="my-1 text-muted">Match annulé ({bet.amount} jeton{bet.amount > 1 ? 's' : ''} remboursé{bet.amount > 1 ? 's' : ''})</h3>
                                 </div>
                             )}
                         </Col>

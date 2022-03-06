@@ -108,12 +108,12 @@ export default function UserBetItem({user, match, bet, onBet}) {
                 )}
                 {('draw' === bet.status) && (
                     <div className="text-center">
-                        <h3 className="my-1 text-muted">Match nul ({bet.amount} jeton{bet.amount > 1 ? 's' : ''} remboursé${bet.amount > 1 ? 's' : ''})</h3>
+                        <h3 className="my-1 text-muted">Match nul ({bet.amount} jeton{bet.amount > 1 ? 's' : ''} remboursé{bet.amount > 1 ? 's' : ''})</h3>
                     </div>
                 )}
                 {('canceled' === bet.status) && (
                     <div className="text-center">
-                        <h3 className="my-1 text-muted">Match annulé ({bet.amount} jeton{bet.amount > 1 ? 's' : ''} remboursé${bet.amount > 1 ? 's' : ''})</h3>
+                        <h3 className="my-1 text-muted">Match annulé ({bet.amount} jeton{bet.amount > 1 ? 's' : ''} remboursé{bet.amount > 1 ? 's' : ''})</h3>
                     </div>
                 )}
                 {(!bet.status && now < startAt) && (

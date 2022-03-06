@@ -140,8 +140,8 @@ export default function App() {
                             <p className="mt-0" key={index}><span className="text-dark">{betResult.name}</span> : <span className={`text-${'won' === betResult.status ? 'success' : 'lost' === betResult.status ? 'danger' : 'muted'}`}>{
                                 'won' === betResult.status ? `Gagné (+${betResult.amount * 2})`
                                 : 'lost' === betResult.status ? `Perdu (-${betResult.amount})`
-                                : 'draw' === betResult.status ? `Match nul (${betResult.amount} jeton${betResult.amount > 1 ? 's' : ''} remboursés)`
-                                : 'canceled' === betResult.status ? `Match annulé (${betResult.amount} jeton${betResult.amount > 1 ? 's' : ''} remboursés)`
+                                : 'draw' === betResult.status ? `Match nul (${betResult.amount} jeton${betResult.amount > 1 ? 's' : ''} remboursé${betResult.amount > 1 ? 's' : ''})`
+                                : 'canceled' === betResult.status ? `Match annulé (${betResult.amount} jeton${betResult.amount > 1 ? 's' : ''} remboursé${betResult.amount > 1 ? 's' : ''})`
                                 : 'Status inconnu'
                             }</span></p>
                         ))}

@@ -250,3 +250,15 @@ export const getMatch = async (matchId) => {
 
     return match;
 };
+
+export const getLeague = async (leagueId) => {
+    let league = null;
+
+    await pandaScoreQuery().get(`leagues/${leagueId}`).then((data) => {
+        league = data.data;
+    }).catch((error) => {
+        console.error(`Error during getLeague with leagueId ${leagueId} : ${error.message}`);
+    });
+
+    return league;
+};
