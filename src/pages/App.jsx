@@ -164,7 +164,7 @@ export default function App() {
                             }</span></p>
                         ))}
                         <h4 className="mt-0 mb-1">
-                            <span className="text-dark">Total :</span>
+                            <span className="text-dark">Total : </span>
                             <span className={`text-${totalCoins < 0 ? 'danger' : 'success'}`}>
                                 {totalCoins > 0 ? '+' : ''}{totalCoins} jeton{totalCoins > 1 || totalCoins < -1 ? 's' : ''}
                             </span>

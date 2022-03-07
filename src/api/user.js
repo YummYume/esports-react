@@ -396,7 +396,7 @@ export const editBet = async (bet, user, amount, betOn) => {
 
     if (bet.amount < res.amount) {
         res && (await addCoins(user, amount - bet.amount, true));
-    } else if (bet.amount > bet.amount) {
+    } else if (bet.amount > res.amount) {
         res && (await addCoins(user, bet.amount - amount));
     }
 
