@@ -47,7 +47,7 @@ export default function UserBetItem({user, match, bet, onBet}) {
                     <Col sm={5} xs={6} className="d-flex justify-content-center align-items-center">
                         <Image
                             rounded={true}
-                            src={firstOpponent.image_url ?? 'https://c.tenor.com/_9Fx5W2D0ZkAAAAC/tiens-tiens-tiens-tiens.gif'}
+                            src={firstOpponent.image_url ?? 'https://i1.sndcdn.com/artworks-7phBaUdSuSD2OydH-SmAgcg-t500x500.jpg'}
                             className={styles.imgHeight}
                         />
                     </Col>

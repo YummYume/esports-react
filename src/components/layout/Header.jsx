@@ -28,7 +28,7 @@ export default function Header({user, updateUser, loading}) {
                             height="30"
                             className="d-inline-block align-top"
                         />
-                        Wide Esport Bettings
+                        WideEsportBettings
                     </Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <HeaderNav user={user} disconnectUser={disconnectUser} loading={loading} updateUser={updateUser} />
